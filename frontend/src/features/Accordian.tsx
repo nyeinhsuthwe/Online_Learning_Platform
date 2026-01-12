@@ -27,14 +27,21 @@ export function Accordian() {
   const { id: courseId } = useParams<{ id: string }>()
   const { data: chaptersResponse } = useChapter(courseId || "")
 
-  if (!chaptersResponse) return null
-
+  if (!chaptersResponse || chaptersResponse.data.length === 0) {
+    return (
+      <div className="text-center text-gray-400 py-10">
+        No lessons available for this course.
+      </div>
+    )
+  }
   return (
     <Accordion type="single" collapsible className="w-full">
       {chaptersResponse.data.map((chapter: Chapter) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const { data: episodesResponse } = useEpisode(chapter._id)
         const episodes: Episode[] = episodesResponse?.data || []
+
+     
 
         return (
           <AccordionItem key={chapter._id} value={chapter._id}>

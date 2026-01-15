@@ -19,6 +19,7 @@ import { useApiMutation } from '@/hooks/useMutation'
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import Cookies from "js-cookie"
+import { useUserStore } from "@/store/user"
 
 type LoginResponse = {
     _id: string
@@ -33,17 +34,17 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     const { register, handleSubmit, formState: { errors } } = useForm<LoginInfo>({
         resolver: zodResolver(LoginSchema),
     })
+    const { setUser } = useUserStore()
 
     const loginMutation = useApiMutation<
         { email: string; password: string },
         LoginResponse
     >({
         onSuccess: (res) => {
-            Cookies.set("Token", res.token)
-
+            Cookies.set("Token", res.token!)
             localStorage.setItem("userRole", res.data.role)
-
-            toast(res.msg, { position: "top-center" })
+            setUser(res.data, res.token!);
+            toast(res.msg)
 
             if (res.data.role === "admin") {
                 navigate("/admin", { replace: true })

@@ -1,8 +1,13 @@
 import { Card } from "@/components/ui/card";
+import { CourseReviews } from "./CarouselReview";
+import { useParams } from "react-router-dom";
+
 
 export function SimpleVd() {
+     const { id: courseId } = useParams<{ id: string }>();
     return (
-        <Card className="rounded-md overflow-hidden gap-3  py-0 text-white font-semibold text-[14px]">
+        <div>
+            <Card className="rounded-md overflow-hidden gap-3  py-0 text-white font-semibold text-[14px]">
                 <span className="block bg-primary-dark px-3 py-2 rounded-t-md">
                     Simple Lesson Video
                 </span>
@@ -15,6 +20,8 @@ export function SimpleVd() {
                     />
                 </div>
             </Card>
+           <CourseReviews courseId={courseId}/>
+        </div>
 
     )
 }

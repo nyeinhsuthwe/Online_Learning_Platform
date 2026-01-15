@@ -6,6 +6,7 @@ interface QueryPayload {
   method?: "GET" | "POST"; 
   queryKey?: unknown[];
   params?: Record<string, any>;
+  enabled?: boolean
 }
 
 export function useApiQuery<TData = any>(

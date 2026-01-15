@@ -14,16 +14,32 @@ export const useChapter = (courseId: string) => {
     })
 }
 
-export const useEpisode = (chapterId:string) => {
+export const useEpisode = (chapterId: string) => {
     return useApiQuery({
         queryKey: ['episode', chapterId],
-        endpoint : `${import.meta.env.VITE_API_URL}/get-episode-list?chapterId=${chapterId}`
+        endpoint: `${import.meta.env.VITE_API_URL}/get-episode-list?chapterId=${chapterId}`,
+        enabled: !!chapterId,
     })
 }
 
-export const useEpisodeById = (episodeId : string) => {
+export const useEpisodeById = (episodeId: string) => {
     return useApiQuery({
         queryKey: ["episode", episodeId],
         endpoint: `${import.meta.env.VITE_API_URL}/get-episode/${episodeId}`,
+        enabled: !!episodeId, 
+    })
+}
+
+export const useGetCourseById = (courseId : string) => {
+    return useApiQuery({
+        queryKey: ["coursebyid"],
+        endpoint: `${import.meta.env.VITE_API_URL}/get-courseById/${courseId}`
+    })
+}
+
+export const useGetReviewList = (courseId: string) => {
+    return useApiQuery({
+        queryKey: ["reviews"],
+        endpoint: `${import.meta.env.VITE_API_URL}/reviewList/${courseId}`
     })
 }

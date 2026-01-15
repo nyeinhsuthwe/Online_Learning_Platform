@@ -4,7 +4,7 @@ import { Clock } from "lucide-react";
 import { VideoIndicator } from "./VideoIndicator";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useChapter, useEpisode } from "@/common/api";
+import { useChapter, useEpisode, useGetCourseById } from "@/common/api";
 
 interface Chapter { _id: string; title: string; }
 interface Episode { _id: string; title: string; description: string; videoUrl: string; chapter_id: Chapter; }
@@ -27,6 +27,8 @@ export function LessonAccordion() {
         const chapterId = ep.chapter_id._id;
         if (grouped[chapterId]) grouped[chapterId].episodes.push(ep);
     });
+
+    const course = useGetCourseById(courseId || "")
 
     const [progressMap, setProgressMap] = useState<Record<string, number>>({});
     useEffect(() => {
@@ -54,14 +56,21 @@ export function LessonAccordion() {
 
     return (
         <div className="space-y-5">
-            <Card className="p-5 shadow-[0_-1px_5px_rgba(0,0,0,0.04),0_1px_5px_rgba(0,0,0,0.04)] shadow-sky-200  dark:text-blue-400  ">
-                <span className="text-[30px] font-bold"> Title</span>
-                <span className="font-semibold"> Publish Date -</span>
+            <Card className="p-5 shadow-[0_-1px_5px_rgba(0,0,0,0.04),0_1px_5px_rgba(0,0,0,0.04)] shadow-sky-200   dark:text-blue-400  ">
+                <span className="text-[30px] font-bold text-gray-600 dark:text-blue-500"> {course?.data?.data?.title}</span>
+                <span className="font-semibold dark:text-white text-gray-600">
+                    Publish Date –{" "}
+                    {new Date(course?.data?.data?.createdAt).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                    })}
+                </span>
             </Card>
             <Accordion
                 type="single"
                 collapsible
-                className="w-full space-y-3"
+                className="w-full space-y-3 "
                 value={openChapter ?? ""}
                 onValueChange={val => setOpenChapter(val || null)}
             >

@@ -4,7 +4,7 @@ import { ModeToggle } from "./DarkMode"
 
 const Navbar = () => {
     return (
-        <nav className="h-16 bg-background  px-16 flex items-center justify-between shadow-sm sticky top-0">
+        <nav className="h-16 bg-background z-100 px-16 flex items-center justify-between shadow-sm sticky top-0">
             {/* Logo */}
             <div className="flex items-center justify-center">
                 <img src="/logo.png" alt="" className="w-20 h-19" />

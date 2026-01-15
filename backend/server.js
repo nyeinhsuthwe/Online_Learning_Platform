@@ -9,6 +9,8 @@ const CourseRoute = require("./routes/course")
 const cookieParser = require("cookie-parser")
 const ChapterRoute = require('./routes/chapter')
 const EpisodeRoute = require('./routes/episode')
+const Enroll = require("./routes/enroll")
+const Review = require("./routes/review")
 const path = require("path");
 
 const app = express()
@@ -44,6 +46,8 @@ app.use("/api", AuthRoute)
 app.use("/api", CourseRoute)
 app.use("/api", ChapterRoute)
 app.use("/api", EpisodeRoute)
+app.use("/api", Enroll)
+app.use("/api", Review)
 
 
 

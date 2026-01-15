@@ -29,9 +29,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
 
     const registerMutation = useApiMutation({
         onSuccess: (res) => {
-            toast(res.msg, {
-                position: "top-center",
-            })
+            toast(res.msg)
             navigate("/login");
         }
     });

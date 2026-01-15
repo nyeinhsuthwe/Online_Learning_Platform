@@ -29,7 +29,7 @@ export function CommentSession() {
                         <Textarea
                             placeholder="Type your message here."
                             id="message-2"
-                            className="w-full h-32 sm:h-40 bg-white text-text-primary resize-none"
+                            className="w-full h-32 sm:h-40 bg-white text-text-primary dark:text-white resize-none"
                         />
 
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 gap-2 sm:gap-0">

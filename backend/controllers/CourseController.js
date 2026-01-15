@@ -37,6 +37,17 @@ const CourseController = {
         }
     },
 
+    getCourseById: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const course = await Course.findById(id);
+            if (!course) return res.status(404).json({ message: "Course not found" });
+            return res.status(200).json({ data: course });
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+
     delete: async (req, res) => {
         const { id } = req.params;
         const deleteCourse = await Course.findByIdAndDelete(id);

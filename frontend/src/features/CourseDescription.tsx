@@ -42,7 +42,7 @@ export function CourseDescription() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Button className="bg-primary-dark h-12 sm:h-12 text-[14px] sm:text-[16px] text-white rounded-lg hover:bg-primary-hover animate-bounce w-full">
+                <Button onClick={()=> navigate(`/user/enroll/${course._id}`) } className="bg-primary-dark h-12 sm:h-12 text-[14px] sm:text-[16px] text-white rounded-lg hover:bg-primary-hover animate-bounce w-full">
                     Enrolled Now
                 </Button>
                 <Button className="bg-text-yellow h-12 sm:h-12 text-[14px] sm:text-[16px] rounded-lg text-white hover:bg-yellow-500 w-full">
@@ -52,7 +52,7 @@ export function CourseDescription() {
 
             <Button
                 onClick={() => navigate(-1)}
-                className="border dark:bg-black dark:text-white bg-bg-navbar dark:hover:bg-transparent hover:bg-bg-navbar text-text-secondary border-text-yellow w-full h-12 text-[14px] sm:text-[16px] rounded-lg"
+                className="border z-0 dark:bg-black dark:text-white bg-bg-navbar dark:hover:bg-transparent hover:bg-bg-navbar text-text-secondary border-text-yellow w-full h-12 text-[14px] sm:text-[16px] rounded-lg"
             >
                 Watch Later
             </Button>

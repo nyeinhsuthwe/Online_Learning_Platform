@@ -2,8 +2,41 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { Reply } from "./Reply";
+import { useApiMutation } from "@/hooks/useMutation";
+import { toast } from "sonner";
+import { useEpisodeStore } from "@/store/episode";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function CommentSession() {
+    const { episode } = useEpisodeStore();
+    const [comment, setComment] = useState("");
+    const queryClient = useQueryClient();
+
+    const commentMutation = useApiMutation({
+        onSuccess: () => {
+            toast.success("Comment successfully!")
+            setComment("");
+            queryClient.invalidateQueries({
+                queryKey: ["comments", episode?._id]
+            })
+        },
+        onError: (err) => {
+            toast.error(err.message)
+        }
+    })
+
+    const onSubmit = () => {
+        commentMutation.mutate({
+            endpoint: `${import.meta.env.VITE_API_URL}/create-comment/${episode?._id}`,
+            method: "POST",
+            body: {
+                content: comment
+            }
+        })
+    }
+
     return (
         <div>
             <Card className="text-center gap-2 bg-sky-100 dark:bg-transparent p-4 sm:p-6 md:p-8">
@@ -27,6 +60,8 @@ export function CommentSession() {
 
                     <div className="flex flex-col flex-1">
                         <Textarea
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
                             placeholder="Type your message here."
                             id="message-2"
                             className="w-full h-32 sm:h-40 bg-white text-text-primary dark:text-white resize-none"
@@ -41,12 +76,16 @@ export function CommentSession() {
                                 Subscribe to get reply email notifications
                             </p>
 
-                            <Button className="w-full sm:w-40 h-10 sm:h-12 text-[14px] sm:text-[16px] bg-primary-dark rounded-lg text-white hover:bg-primary-hover">
+                            <Button onClick={() => onSubmit()} className="w-full sm:w-40 h-10 sm:h-12 text-[14px] sm:text-[16px] bg-primary-dark rounded-lg text-white hover:bg-primary-hover">
                                 Comment
                             </Button>
                         </div>
                     </div>
                 </div>
+                <div className="ml-6  pl-9 ">
+                    <Reply />
+                </div>
+
             </Card>
         </div>
     )

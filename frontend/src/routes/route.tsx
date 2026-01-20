@@ -6,7 +6,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import LayoutForUser from '@/layout/User';
 import Course from '@/pages/User/Course';
 import { CourseDetail } from '@/pages/User/CourseDetail';
-import { LessonDetail } from '@/features/LessonDetail';
+import { LessonDetail } from '@/features/Lesson/LessonDetail';
 import { Enroll } from '@/pages/User/Enroll';
 
 const route = createBrowserRouter([
@@ -48,9 +48,9 @@ const route = createBrowserRouter([
       },
       {
         path: "enroll/:id",
-        element : <Enroll/>
+        element: <Enroll />
       },
-  
+
     ],
   },
 ])

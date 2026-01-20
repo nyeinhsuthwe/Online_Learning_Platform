@@ -1,4 +1,4 @@
-import CourseCard from "@/features/Course"
+import CourseCard from "@/features/Course/Course"
 
 const Course = () => {
   return (

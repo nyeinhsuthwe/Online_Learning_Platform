@@ -18,18 +18,42 @@ import { userSchema, type UserInfo } from "@/schemas/userSchema"
 import { useApiMutation } from '@/hooks/useMutation'
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
+import { useUserStore } from "@/store/user"
 
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: "user" | "admin";
+}
+
+interface AuthResponse {
+  success: boolean;
+  msg: string;
+  data: User;
+  token: string;
+}
+
+interface RegisterRequest {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+}
 
 export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
-
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { setUser } = useUserStore();
     const { register, handleSubmit, formState: { errors } } = useForm<UserInfo>({
         resolver: zodResolver(userSchema)
-    })
+    });
 
-    const registerMutation = useApiMutation({
+    const registerMutation = useApiMutation<RegisterRequest, AuthResponse>({
         onSuccess: (res) => {
-            toast(res.msg)
+            setUser(res.data, res.token); 
+            toast(res.msg);
             navigate("/login");
         }
     });
@@ -38,7 +62,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
         registerMutation.mutate({
             endpoint: `${import.meta.env.VITE_API_URL}/register`,
             method: "POST",
-            body: data,
+            body: data, 
         });
     }
 
@@ -61,21 +85,31 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                                 </FieldDescription>
                             )}
                         </Field>
+
                         <Field>
                             <FieldLabel htmlFor="email">Email</FieldLabel>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="m@example.com"
-                                {...register('email')}
+                            <Input id="email" type="email" placeholder="m@example.com"
+                                {...register("email")}
                             />
                             {errors.email && (
                                 <FieldDescription className="text-red-500">
                                     {errors.email.message}
                                 </FieldDescription>
                             )}
-
                         </Field>
+
+                        <Field>
+                            <FieldLabel htmlFor="phone">Phone</FieldLabel>
+                            <Input id="phone" type="phone" placeholder="Eg, 09xxxxxxxxx"
+                                {...register("phone")}
+                            />
+                            {errors.phone && (
+                                <FieldDescription className="text-red-500">
+                                    {errors.phone.message}
+                                </FieldDescription>
+                            )}
+                        </Field>
+
                         <Field>
                             <FieldLabel htmlFor="password">Password</FieldLabel>
                             <Input id="password" type="password" {...register("password")} />
@@ -85,10 +119,9 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                                 </FieldDescription>
                             )}
                         </Field>
+
                         <Field>
-                            <FieldLabel htmlFor="confirmPassword">
-                                Confirm Password
-                            </FieldLabel>
+                            <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
                             <Input id="confirmPassword" type="password" {...register("confirmPassword")} />
                             {errors.confirmPassword && (
                                 <FieldDescription className="text-red-500">
@@ -96,6 +129,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                                 </FieldDescription>
                             )}
                         </Field>
+
                         <FieldGroup>
                             <Field>
                                 <Button type="submit" disabled={registerMutation.isPending}>
@@ -111,5 +145,6 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                 </form>
             </CardContent>
         </Card>
-    )
+    );
 }
+

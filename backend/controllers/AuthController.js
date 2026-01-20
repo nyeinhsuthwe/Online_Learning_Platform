@@ -4,8 +4,8 @@ const createToken = require("../helper/createToken")
 const AuthController = {
     register: async (req, res) => {
         try {
-            const { name, email, password, confirmPassword } = req.body;
-            const UserInfo = await User.register(name, email, password, confirmPassword);
+            const { name, email, password, phone, confirmPassword } = req.body;
+            const UserInfo = await User.register(name, email, password, phone, confirmPassword);
             const token = createToken(UserInfo._id);
             res.cookie("jwt", token, {
                 httpOnly: true,
@@ -16,6 +16,8 @@ const AuthController = {
                 _id: UserInfo._id,
                 name: UserInfo.name,
                 email: UserInfo.email,
+                phone: UserInfo.phone,
+                password: UserInfo.password,
                 role: UserInfo.role,
             };
 
@@ -44,9 +46,11 @@ const AuthController = {
 
             const userResponse = {
                 _id: UserInfo._id,
+                name: UserInfo.name,
                 email: UserInfo.email,
-                role : UserInfo.role
-            }
+                phone: UserInfo.phone,
+                role: UserInfo.role,
+            };
 
             return res.status(200).json({
                 success: true,
@@ -57,7 +61,8 @@ const AuthController = {
         } catch (e) {
             return res.status(400).json({ error: e.message });
         }
-    },
+    }
+
 }
 
 module.exports = AuthController

@@ -1,8 +1,10 @@
 import { useEpisode } from "@/common/api"
 import { Card } from "@/components/ui/card"
-import { AccordionContent, AccordionItem, AccordionTrigger } from "../components/ui/accordion"
+import { AccordionContent, AccordionItem, AccordionTrigger } from "../../components/ui/accordion"
 import { Play } from "lucide-react"
 import type { useNavigate } from "react-router-dom"
+import { useEpisodeStore } from "@/store/episode"
+import { useEffect } from "react"
 
 interface ChapterItemProps {
     chapter: Chapter
@@ -24,6 +26,12 @@ interface Episode {
 
 export function ChapterItem({ chapter, courseId, navigate }: ChapterItemProps) {
     const { data: episodesResponse } = useEpisode(chapter._id || "")
+    const setEpisode = useEpisodeStore((state) => state.setEpisode)
+    useEffect(() => {
+        if (episodesResponse) {
+            setEpisode(episodesResponse);
+        }
+    }, [episodesResponse, setEpisode]);
     const episodes: Episode[] = episodesResponse?.data || []
 
     return (
@@ -40,7 +48,10 @@ export function ChapterItem({ chapter, courseId, navigate }: ChapterItemProps) {
                     <Card
                         key={ep._id}
                         className="p-3 cursor-pointer"
-                        onClick={() => navigate(`/user/lesson-detail/${courseId}/${ep._id}`)}
+                        onClick={() => {
+                            setEpisode(ep);
+                            navigate(`/user/lesson-detail/${courseId}/${ep._id}`)
+                        }}
                     >
                         <div className="flex justify-between items-center w-full">
                             <div className="flex gap-3 items-center">

@@ -1,4 +1,4 @@
-import { CommentSession } from "./CommentSession";
+import { CommentSession } from "../comment/CommentSession";
 import { LessonAccordion } from "./LessonAccordion";
 import { LessonDetailVd } from "./LessonDetailVd";
 

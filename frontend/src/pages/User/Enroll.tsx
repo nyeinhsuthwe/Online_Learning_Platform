@@ -1,5 +1,5 @@
-import { Contact } from "@/features/Contact"
-import { PaymentDetail } from "@/features/PaymentDetail"
+import { Contact } from "@/features/payment/Contact"
+import { PaymentDetail } from "@/features/payment/PaymentDetail"
 
 export function Enroll() {
     return (

@@ -11,6 +11,7 @@ const ChapterRoute = require('./routes/chapter')
 const EpisodeRoute = require('./routes/episode')
 const Enroll = require("./routes/enroll")
 const Review = require("./routes/review")
+const Comment = require("./routes/comment")
 const path = require("path");
 
 const app = express()
@@ -48,6 +49,7 @@ app.use("/api", ChapterRoute)
 app.use("/api", EpisodeRoute)
 app.use("/api", Enroll)
 app.use("/api", Review)
+app.use("/api", Comment)
 
 
 

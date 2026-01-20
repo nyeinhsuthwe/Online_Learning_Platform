@@ -1,10 +1,10 @@
 import { Card } from "@/components/ui/card";
-import { CourseReviews } from "./CarouselReview";
+import { CourseReviews } from "../Review/CarouselReview";
 import { useParams } from "react-router-dom";
 
 
 export function SimpleVd() {
-     const { id: courseId } = useParams<{ id: string }>();
+    const { id: courseId } = useParams<{ id: string }>();
     return (
         <div>
             <Card className="rounded-md overflow-hidden gap-3  py-0 text-white font-semibold text-[14px]">
@@ -20,7 +20,7 @@ export function SimpleVd() {
                     />
                 </div>
             </Card>
-           <CourseReviews courseId={courseId}/>
+            <CourseReviews courseId={courseId} />
         </div>
 
     )

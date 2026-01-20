@@ -5,7 +5,9 @@ interface User {
   _id: string;
   name?: string;
   email: string;
+  phone?: string;
   role: "user" | "admin";
+ 
 }
 
 interface UserState {
@@ -20,6 +22,7 @@ export const useUserStore = create(
     (set) => ({
       user: null,
       token: null,
+
       setUser: (user, token) => set({ user, token }),
       logout: () => set({ user: null, token: null }),
     }),

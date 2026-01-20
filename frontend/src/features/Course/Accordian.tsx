@@ -4,7 +4,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom"
 import { useChapter} from "@/common/api"
 import { useEffect, useState } from "react"
-import { ChapterItem } from "./ChapterItems"
+import { ChapterItem } from "../Lesson/ChapterItems"
 
 interface Chapter {
   _id: string
@@ -24,10 +24,12 @@ export function Accordian() {
   const { id: courseId } = useParams<{ id: string }>()
   const { data: chaptersResponse } = useChapter(courseId || "")
   
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [episodesByChapter, setEpisodesByChapter] = useState<Record<string, Episode[]>>({})
 
   useEffect(() => {
     if (chaptersResponse?.data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEpisodesByChapter({})
     }
   }, [chaptersResponse])

@@ -9,7 +9,9 @@ export interface Card {
   createdAt: string;
   updatedAt: string;
   __v: number;
-  course_id: string
+  course_id: string;
+  chapterCount: number;
+  episodeCount: number
 }
 
 export interface CardApiResponse {
@@ -28,4 +30,20 @@ export interface Review {
   comment: string
   createdAt: string
 }
+
+
+export interface Comment {
+  _id: string;
+  user_id: { _id: string; name: string };
+  episode_id: string;
+  content: string;
+  parent_comment_id: string | null;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  replies: Comment[]; 
+}
+
+
+
 

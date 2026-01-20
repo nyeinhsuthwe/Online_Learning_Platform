@@ -77,8 +77,8 @@ const CourseCard = (props: React.ComponentProps<typeof Card>) => {
                             <p className='text-lg font-semibold text-foreground'>{course.title}</p>
 
                             <div className='flex gap-3'>
-                                <p>10 Chapters</p>
-                                <p>30 Episodes</p>
+                                <p>{course.chapterCount} Chapters</p>
+                                <p>{course.episodeCount} Episodes</p>
                             </div>
 
                             <div className='flex gap-1 font-semibold'>

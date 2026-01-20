@@ -43,3 +43,11 @@ export const useGetReviewList = (courseId: string) => {
         endpoint: `${import.meta.env.VITE_API_URL}/reviewList/${courseId}`
     })
 }
+
+export const useGetComment = (episodeId: string) => {
+    return useApiQuery({
+        queryKey: ["comments", episodeId],
+        endpoint: `${import.meta.env.VITE_API_URL}/get-all-comments/${episodeId}`,
+        enabled: !!episodeId,
+    })
+}

@@ -6,6 +6,11 @@ const EpisodeSchema = new mongoose.Schema({
     ref: "Chapter",
     required: true
   },
+  course_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Course",
+    required: true
+  },
   title: {
     type: String,
     required: true,
@@ -13,7 +18,7 @@ const EpisodeSchema = new mongoose.Schema({
   },
   videoUrl: {
     type: String,
-    
+
   },
   description: {
     type: String,

@@ -1,4 +1,6 @@
-const Course = require('../models/Course')
+const Course = require('../models/Course');
+const Episode = require('../models/Episode');
+const Chapter = require("../models/Chapter")
 
 const CourseController = {
     createCourse: async (req, res) => {
@@ -26,23 +28,69 @@ const CourseController = {
 
     getCourse: async (req, res) => {
         try {
-            const data = await Course.find()
-            return res.status(200).json({
-                data
-            })
+            const courses = await Course.aggregate([
+                // get chapters
+                {
+                    $lookup: {
+                        from: "chapters",
+                        localField: "_id",
+                        foreignField: "course_id",
+                        as: "chapters"
+                    }
+                },
+                // get episodes via chapter_id
+                {
+                    $lookup: {
+                        from: "episodes",
+                        localField: "chapters._id",
+                        foreignField: "chapter_id",
+                        as: "episodes"
+                    }
+                },
+                // counts
+                {
+                    $addFields: {
+                        chapterCount: { $size: "$chapters" },
+                        episodeCount: { $size: "$episodes" }
+                    }
+                },
+                // clean output
+                {
+                    $project: {
+                        chapters: 0,
+                        episodes: 0
+                    }
+                }
+            ]);
+
+            return res.status(200).json({ data: courses });
+
         } catch (error) {
-            return res.status(400).json({
-                error: error.message
-            })
+            return res.status(400).json({ error: error.message });
         }
     },
+
 
     getCourseById: async (req, res) => {
         try {
             const { id } = req.params;
             const course = await Course.findById(id);
+            const chapterCount = await Chapter.countDocuments({
+                course_id: id
+            });
+
+            const episodeCount = await Episode.countDocuments({
+                course_id: id
+            });
             if (!course) return res.status(404).json({ message: "Course not found" });
-            return res.status(200).json({ data: course });
+
+            return res.status(200).json({
+                data: course,
+                counts: {
+                    chapters: chapterCount,
+                    episodes: episodeCount
+                }
+            });
         } catch (error) {
             return res.status(400).json({ message: error.message });
         }

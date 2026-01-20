@@ -4,30 +4,30 @@ import { Download } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useRef, useEffect } from "react";
 import { useEpisodeById } from "@/common/api";
-import { ReviewDialog } from "./ReviewDialog";
+import { ReviewDialog } from "../Review/ReviewDialog";
+import { useEpisodeStore } from "@/store/episode";
 
 
 export function LessonDetailVd() {
-    const { episodeId } = useParams<{ episodeId: string }>();
-    const { courseId } = useParams<{ courseId: string }>();
+    const { episodeId, courseId } = useParams();
     const videoRef = useRef<HTMLVideoElement>(null);
-    const { data: episodeResponse } = useEpisodeById(episodeId || "");
-    const episode = episodeResponse?.data;
+
+    const storedEpisode = useEpisodeStore((state) => state.episode);
+    const setEpisode = useEpisodeStore((state) => state.setEpisode);
+    const { data: episodeResponse, refetch } = useEpisodeById(episodeId || "");
+
+    const episode = storedEpisode || episodeResponse?.data;
 
     useEffect(() => {
-        const video = videoRef.current;
-        if (!video || !episodeId) return;
+        if (episodeResponse?.data) {
+            setEpisode(episodeResponse.data);
+        } else if (episodeId) {
+            refetch().then(res => {
+                if (res.data) setEpisode(res.data);
+            });
+        }
+    }, [episodeId, episodeResponse, setEpisode, refetch]);
 
-        const onLoaded = () => {
-            const saved = localStorage.getItem(`episode-progress-${episodeId}`);
-            if (saved && parseFloat(saved) < 100) {
-                video.currentTime = (parseFloat(saved) / 100) * video.duration;
-            }
-        };
-
-        video.addEventListener("loadedmetadata", onLoaded);
-        return () => video.removeEventListener("loadedmetadata", onLoaded);
-    }, [episodeId]);
 
     if (!episode) return <div>No episode found</div>;
 
@@ -85,7 +85,7 @@ export function LessonDetailVd() {
 
             {/* Action Buttons */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <ReviewDialog courseId={ courseId } />
+                <ReviewDialog courseId={courseId} />
                 <Button className="bg-text-yellow h-11 sm:h-12 text-[14px] sm:text-[16px] hover:bg-yellow-500 text-white flex gap-2">
                     <Download className="w-5 h-5" />
                     Download Session

@@ -19,7 +19,7 @@ export const CourseReviews = ({ courseId }: CourseReviewsProps) => {
         <div className="mt-10 ">
             <h2 className="text-xl font-semibold mb-2">Student Reviews</h2>
 
-          <ReviewSummary totalReviews={totalReviews} />
+            <ReviewSummary totalReviews={totalReviews} />
 
 
             {totalReviews.length === 0 ? (

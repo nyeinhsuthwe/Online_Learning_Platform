@@ -11,7 +11,8 @@ export interface Card {
   __v: number;
   course_id: string;
   chapterCount: number;
-  episodeCount: number
+  episodeCount: number;
+  enrollCount : number
 }
 
 export interface CardApiResponse {
@@ -42,6 +43,13 @@ export interface Comment {
   updatedAt: string;
   __v: number;
   replies: Comment[]; 
+}
+
+export interface Enroll {
+  _id: string,
+  course_id: string,
+  user_id: string,
+  paymentStatus : string
 }
 
 

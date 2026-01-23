@@ -5,5 +5,6 @@ const authMiddleware = require('../middlewares/auth')
 
 router.post("/enroll/:course_id", authMiddleware, EnrollController.createEnroll)
 router.get("/get-enrollList", EnrollController.getEnrollList)
+router.post("/confirm-status", EnrollController.confirmStatus)
 
 module.exports = router

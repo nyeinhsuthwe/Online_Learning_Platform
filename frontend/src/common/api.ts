@@ -51,3 +51,11 @@ export const useGetComment = (episodeId: string) => {
         enabled: !!episodeId,
     })
 }
+
+export const useEnrollList = () => {
+     return useApiQuery({
+        queryKey: ["enrolls"],
+        endpoint: `${import.meta.env.VITE_API_URL}/get-enrollList`,
+      
+    })
+}

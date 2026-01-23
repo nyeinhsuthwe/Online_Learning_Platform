@@ -47,18 +47,41 @@ const CourseController = {
                         as: "episodes"
                     }
                 },
+                //enroll
+                {
+                    $lookup: {
+                        from: "enrolls",
+                        let: { courseId: "$_id" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ["$course_id", "$$courseId"] },
+                                            { $eq: ["$paymentStatus", "paid"] }
+                                        ]
+                                    }
+                                }
+                            }
+                        ],
+                        as: "paidEnrolls"
+                    }
+                },
+
                 // counts
                 {
                     $addFields: {
                         chapterCount: { $size: "$chapters" },
-                        episodeCount: { $size: "$episodes" }
+                        episodeCount: { $size: "$episodes" },
+                        enrollCount: { $size: "$paidEnrolls" }
                     }
                 },
                 // clean output
                 {
                     $project: {
                         chapters: 0,
-                        episodes: 0
+                        episodes: 0,
+                        paidEnrolls: 0
                     }
                 }
             ]);

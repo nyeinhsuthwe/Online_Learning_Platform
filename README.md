@@ -1,5 +1,3 @@
-Here's the complete README.md content as a single text block:
-
 # Online Learning Web
 
 A full-stack online learning platform for managing courses, chapters, and video lessons. Built with **React**, **Tailwind CSS**, **Shadcn**, **Node.js**, **Express**, and **MongoDB**.
@@ -176,9 +174,6 @@ frontend/
 4. Push to the branch: `git push origin feature/your-feature`
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 📞 Contact & Support
 

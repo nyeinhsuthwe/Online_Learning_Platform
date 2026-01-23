@@ -50,6 +50,35 @@ const EnrollController = {
                 error: error.message
             })
         }
+    },
+
+    confirmStatus: async (req, res) => {
+        try {
+            const { enroll_id, status } = req.body
+            const enroll = await Enroll.findById(enroll_id);
+            if (!enroll) {
+                return res.status(404).json({
+                    message: "Enrollment not found",
+                });
+            }
+            if (enroll.paymentStatus === "paid") {
+                return res.status(400).json({
+                    message: "Payment already confirmed",
+                });
+            }
+            enroll.paymentStatus = status;
+            enroll.confirmedAt = new Date(); 
+            await enroll.save()
+            return res.status(200).json({
+                message: `Payment ${status} successfully`,
+                enroll,
+            });
+
+        } catch (error) {
+            return res.status(500).json({
+                message: error.message,
+            });
+        }
     }
 };
 

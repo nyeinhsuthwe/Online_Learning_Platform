@@ -4,7 +4,7 @@ import { Outlet } from 'react-router'
 const LayoutForUser = () => {
   return (
     <div className=' min-h-screen '>
-      <Navbar/>
+      <Navbar />
       <div className='px-2 flex items-center justify-center py-10 sm:p-4 md:p-6 lg:p-8 xl:p-10 2xl:p-12'>
         <Outlet/>
       </div>

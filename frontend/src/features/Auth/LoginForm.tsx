@@ -33,6 +33,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     const navigate = useNavigate()
     const { register, handleSubmit, formState: { errors } } = useForm<LoginInfo>({
         resolver: zodResolver(LoginSchema),
+        mode: 'onChange',
     })
     const { setUser } = useUserStore()
 
@@ -44,6 +45,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
             Cookies.set("Token", res.token!)
             localStorage.setItem("userRole", res.data.role)
             setUser(res.data, res.token!);
+            console.log(res.data)
             toast(res.msg)
 
             if (res.data.role === "admin") {
@@ -52,6 +54,12 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                 navigate("/user", { replace: true })
             }
         },
+        onError: (err: any) => {
+            toast.error(
+                err?.response?.data?.error || "Login failed"
+            )
+        }
+
     })
 
 
@@ -100,7 +108,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 
                         <FieldGroup>
                             <Field>
-                                <Button type="submit" disabled={loginMutation.isPending}>
+                                <Button type="submit" className="bg-primary-dark text-white hover:bg-primary-hover" disabled={loginMutation.isPending}>
                                     {loginMutation.isPending ? "Login..." : "Login"}
                                 </Button>
 

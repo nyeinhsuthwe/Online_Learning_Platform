@@ -4,8 +4,8 @@ const createToken = require("../helper/createToken")
 const AuthController = {
     register: async (req, res) => {
         try {
-            const { name, email, password, phone, confirmPassword } = req.body;
-            const UserInfo = await User.register(name, email, password, phone, confirmPassword);
+            const { name, email, password, phone, confirmPassword, bio, avatar } = req.body;
+            const UserInfo = await User.register(name, email, password, phone, confirmPassword, bio, avatar);
             const token = createToken(UserInfo._id);
             res.cookie("jwt", token, {
                 httpOnly: true,
@@ -19,6 +19,8 @@ const AuthController = {
                 phone: UserInfo.phone,
                 password: UserInfo.password,
                 role: UserInfo.role,
+                bio: UserInfo.bio,
+                avatar : UserInfo.avatar
             };
 
             return res.status(200).json({
@@ -50,6 +52,8 @@ const AuthController = {
                 email: UserInfo.email,
                 phone: UserInfo.phone,
                 role: UserInfo.role,
+                bio: UserInfo.bio,
+                avatar: UserInfo.avatar,
             };
 
             return res.status(200).json({
@@ -61,7 +65,23 @@ const AuthController = {
         } catch (e) {
             return res.status(400).json({ error: e.message });
         }
+    },
+    logout: async (req, res) => {
+        try {
+            res.cookie("jwt", "", {
+                httpOnly: true,
+                expires: new Date(0), 
+            });
+
+            return res.status(200).json({
+                success: true,
+                msg: "Logged out successfully",
+            });
+        } catch (e) {
+            return res.status(400).json({ error: e.message });
+        }
     }
+
 
 }
 

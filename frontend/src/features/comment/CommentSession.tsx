@@ -39,8 +39,7 @@ export function CommentSession() {
 
     return (
         <div>
-            <Card className="text-center gap-2 bg-sky-100 dark:bg-transparent p-4 sm:p-6 md:p-8">
-
+            <Card className="text-center gap-2 bg-linear-to-br from-blue-300 to-blue-200 dark:from-slate-900 dark:to-slate-800 p-4 sm:p-6 md:p-8">
                 {/* Title */}
                 <div className="space-y-1 flex flex-col">
                     <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-text-primary dark:text-white">

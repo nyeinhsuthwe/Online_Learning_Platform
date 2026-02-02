@@ -42,17 +42,15 @@ export function CourseDescription() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <EnrollBtn course={course} />
-                <Button className="bg-text-yellow h-12 sm:h-12 text-[14px] sm:text-[16px] rounded-lg text-white hover:bg-yellow-500 w-full">
-                    Watch Now
-                </Button>
-            </div>
-
-            <Button
+               <Button
                 onClick={() => navigate(-1)}
                 className="border z-0 dark:bg-black dark:text-white bg-bg-navbar dark:hover:bg-transparent hover:bg-bg-navbar text-text-secondary border-text-yellow w-full h-12 text-[14px] sm:text-[16px] rounded-lg"
             >
                 Watch Later
             </Button>
+            </div>
+
+            
         </div>
     )
 }

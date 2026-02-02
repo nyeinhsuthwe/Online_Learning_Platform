@@ -59,3 +59,14 @@ export const useEnrollList = () => {
       
     })
 }
+
+export const useEnrollByUser = (page = 1, limit = 6) => {
+  return useApiQuery({
+    queryKey: ["enrollByUser", page],
+    endpoint: `${import.meta.env.VITE_API_URL}/get-enroll-by-id`,
+    params: {
+      page,
+      limit,
+    },
+  });
+};

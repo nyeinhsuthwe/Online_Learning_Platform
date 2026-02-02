@@ -132,7 +132,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
 
                         <FieldGroup>
                             <Field>
-                                <Button type="submit" disabled={registerMutation.isPending}>
+                                <Button type="submit" className="bg-primary-dark text-white hover:bg-primary-hover" disabled={registerMutation.isPending}>
                                     {registerMutation.isPending ? "Creating..." : "Create Account"}
                                 </Button>
 

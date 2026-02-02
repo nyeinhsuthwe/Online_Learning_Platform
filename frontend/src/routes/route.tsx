@@ -8,6 +8,10 @@ import Course from '@/pages/User/Course';
 import { CourseDetail } from '@/pages/User/CourseDetail';
 import { LessonDetail } from '@/features/Lesson/LessonDetail';
 import { Enroll } from '@/pages/User/Enroll';
+import { Setting } from '@/pages/User/Setting';
+import { EditAcc } from '@/features/Setting/EditAcc';
+import { ChangePassword } from '@/features/Setting/ChangePassword';
+import { Invoice } from '@/features/Setting/Invoice';
 
 const route = createBrowserRouter([
   {
@@ -50,6 +54,28 @@ const route = createBrowserRouter([
         path: "enroll/:id",
         element: <Enroll />
       },
+      {
+        path: "setting",
+        element: <Setting />,
+        children: [
+          {
+            index: true,
+            element: <EditAcc />
+          },
+          {
+            path: "edit-account",
+            element: <EditAcc />
+          },
+          {
+            path: "change-password",
+            element: <ChangePassword />
+          },
+          {
+            path: "invoice",
+            element: <Invoice />
+          }
+        ]
+      }
 
     ],
   },

@@ -52,6 +52,41 @@ const EnrollController = {
         }
     },
 
+    getEnrollByUser: async (req, res) => {
+        try {
+            const user_id = req.user.id;
+
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 6;
+            const skip = (page - 1) * limit;
+
+            const [enrolls, total] = await Promise.all([
+                Enroll.find({ user_id })
+                    .populate("course_id", "title")
+                    .skip(skip)
+                    .limit(limit)
+                    .sort({ createdAt: -1 }),
+                Enroll.countDocuments({ user_id }),
+            ]);
+
+            return res.status(200).json({
+                data: enrolls,
+                meta: {
+                    page,
+                    limit,
+                    total,
+                    totalPages: Math.ceil(total / limit),
+                },
+            });
+        } catch (error) {
+            return res.status(400).json({
+                error: error.message,
+            });
+        }
+    },
+
+
+
     confirmStatus: async (req, res) => {
         try {
             const { enroll_id, status } = req.body
@@ -67,7 +102,7 @@ const EnrollController = {
                 });
             }
             enroll.paymentStatus = status;
-            enroll.confirmedAt = new Date(); 
+            enroll.confirmedAt = new Date();
             await enroll.save()
             return res.status(200).json({
                 message: `Payment ${status} successfully`,

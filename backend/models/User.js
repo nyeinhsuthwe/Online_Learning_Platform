@@ -21,6 +21,13 @@ const UserSchema = new schema({
     phone: {
         type: String,
     },
+    bio: {
+        type: String,
+    },
+    avatar: {
+        type: String,
+        default: "/ava1.jpg"
+    },
     role: {
         type: String,
         enum: ["user", "admin"],
@@ -28,7 +35,7 @@ const UserSchema = new schema({
     }
 })
 
-UserSchema.statics.register = async function (name, email, password,phone, confirmPassword) {
+UserSchema.statics.register = async function (name, email, password, phone, confirmPassword) {
     const userExist = await this.findOne({ email });
     if (userExist) {
         throw new Error("User is already existed.");

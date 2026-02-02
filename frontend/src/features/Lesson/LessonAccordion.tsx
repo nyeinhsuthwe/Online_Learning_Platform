@@ -56,17 +56,23 @@ export function LessonAccordion() {
 
     return (
         <div className="space-y-5">
-            <Card className="p-5 shadow-[0_-1px_5px_rgba(0,0,0,0.04),0_1px_5px_rgba(0,0,0,0.04)] shadow-sky-200   dark:text-blue-400  ">
-                <span className="text-[30px] font-bold text-gray-600 dark:text-blue-500"> {course?.data?.data?.title}</span>
-                <span className="font-semibold dark:text-white text-gray-600">
+            <Card
+                className=" p-6 rounded-xl transition bg-linear-to-br from-blue-500 to-blue-200 dark:from-slate-900 dark:to-slate-800 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 dark:text-blue-400">
+                    {course?.data?.data?.title}
+                </h1>
+
+                <p className="mt-2 text-sm font-medium text-blue-100 dark:text-slate-300">
                     Publish Date –{" "}
                     {new Date(course?.data?.data?.createdAt).toLocaleDateString("en-GB", {
                         day: "2-digit",
                         month: "short",
                         year: "numeric",
                     })}
-                </span>
+                </p>
             </Card>
+
+
             <Accordion
                 type="single"
                 collapsible

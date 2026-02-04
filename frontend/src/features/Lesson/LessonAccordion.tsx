@@ -5,6 +5,7 @@ import { VideoIndicator } from "./VideoIndicator";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useChapter, useEpisode, useGetCourseById } from "@/common/api";
+import { LessonAccordionSkeleton } from "../skeletons/LessonAccordionSkeleton";
 
 interface Chapter { _id: string; title: string; }
 interface Episode { _id: string; title: string; description: string; videoUrl: string; chapter_id: Chapter; }
@@ -14,7 +15,7 @@ export function LessonAccordion() {
 
     const navigate = useNavigate();
 
-    const { data: chaptersResponse } = useChapter(courseId || "");
+    const { data: chaptersResponse, isLoading } = useChapter(courseId || "");
     const firstChapterId = chaptersResponse?.data?.[0]?._id || "";
     const { data: episodesResponse } = useEpisode(firstChapterId);
 
@@ -53,6 +54,10 @@ export function LessonAccordion() {
     const handleClick = (epId: string) => {
         if (epId !== episodeId) navigate(`/user/lesson-detail/${courseId}/${epId}`);
     };
+
+    if (isLoading) {
+        return <div><LessonAccordionSkeleton /></div>;
+    }
 
     return (
         <div className="space-y-5">

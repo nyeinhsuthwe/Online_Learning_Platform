@@ -1,20 +1,20 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wallet, Clock, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEnrollByUser } from "../../common/api";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
-const statusConfig: Record<string, any> = {
-  paid: {
-    label: "Paid",
-    color: "bg-green-100 text-green-700",
-    icon: <CheckCircle2 className="w-4 h-4" />,
-  },
-  pending: {
-    label: "Pending",
-    color: "bg-yellow-100 text-yellow-700",
-    icon: <Clock className="w-4 h-4" />,
-  },
+const statusColor: Record<string, string> = {
+  paid: "bg-green-100 text-green-700",
+  pending: "bg-yellow-100 text-yellow-700",
 };
 
 export function Invoice() {
@@ -40,50 +40,66 @@ export function Invoice() {
           ))}
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {invoices.map((invoice: any) => {
-            const status = statusConfig[invoice.paymentStatus];
+        <div className="rounded-xl border bg-background">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Course</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Payment</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Date</TableHead>
+            </TableRow>
+          </TableHeader>
 
-            return (
-              <Card key={invoice._id} className="rounded-2xl shadow-sm h-60 justify-center">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="text-lg">
-                    {invoice?.course_id.title}
-                  </CardTitle>
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-medium ${status.color}`}
-                  >
-                    {status.icon}
-                    {status.label}
-                  </span>
-                </CardHeader>
+          <TableBody>
+            {isLoading ? (
+              Array.from({ length: limit }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell colSpan={5}>
+                    <div className="h-6 bg-muted rounded animate-pulse" />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : invoices.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  No invoices found
+                </TableCell>
+              </TableRow>
+            ) : (
+              invoices.map((invoice: any) => (
+                <TableRow key={invoice._id} className="h-15">
+                  <TableCell className="text-[16px]">
+                    {invoice.course_id?.title ?? "Course"}
+                  </TableCell>
 
-                <CardContent className="space-y-3 text-sm text-muted-foreground">
-                  <div className="flex justify-between">
-                    <span>Amount</span>
-                    <span className="font-medium text-foreground">
-                      {invoice.price.toLocaleString()} MMK
-                    </span>
-                  </div>
+                  <TableCell>
+                    {invoice.price.toLocaleString()} MMK
+                  </TableCell>
 
-                  <div className="flex justify-between">
-                    <span>Payment Method</span>
-                    <span className="flex items-center gap-1 capitalize">
-                      <Wallet className="w-4 h-4" /> {invoice.paymentMethod}
-                    </span>
-                  </div>
+                  <TableCell className="text-[16px]">
+                    {invoice.paymentMethod}
+                  </TableCell>
 
-                  <div className="flex justify-between">
-                    <span>Date</span>
-                    <span>
-                      {new Date(invoice.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                  <TableCell>
+                    <Badge
+                      variant="secondary"
+                      className={statusColor[invoice.paymentStatus]}
+                    >
+                      {invoice.paymentStatus}
+                    </Badge>
+                  </TableCell>
+
+                  <TableCell>
+                    {new Date(invoice.createdAt).toLocaleDateString()}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
       )}
 
       {/* Pagination */}

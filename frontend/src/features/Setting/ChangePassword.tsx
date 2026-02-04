@@ -43,7 +43,7 @@ export function ChangePassword() {
 
 
     return (
-        <div className="flex flex-col gap-6 my-10 ">
+        <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
                 <Label className="text-md">Current Password</Label>
                 <div className="relative">

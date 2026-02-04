@@ -4,7 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { useState } from "react";
 import { ChangePassword } from "@/features/Setting/ChangePassword";
 import { EditAcc } from "@/features/Setting/EditAcc";
-import {Invoice} from "@/features/Setting/Invoice";
+import { Invoice } from "@/features/Setting/Invoice";
 
 export function Setting() {
   const [panelOpen, setPanelOpen] = useState("edit-acc");
@@ -16,20 +16,21 @@ export function Setting() {
       </span>
 
       <SidebarProvider>
-        <Card className="flex flex-row gap-6 p-6 w-full max-w-5xl mx-auto">
-          
+        <Card className="flex flex-row w-full max-w-5xl mx-auto gap-0">
+
           {/* Sidebar */}
-          <div className="w-72  pr-4">
+          <div className="">
             <SettingSidebar setPanelOpen={setPanelOpen} />
           </div>
 
           {/* Content */}
-          <div className="flex-1">
-            {panelOpen === "edit-acc" && <EditAcc />}
-            {panelOpen === "change-password" && <ChangePassword />}
-            {panelOpen === "invoice" && <Invoice />}
+          <div className="flex-1 flex justify-center">
+            <div className="w-full max-w-2xl  py-10">
+              {panelOpen === "edit-acc" && <EditAcc />}
+              {panelOpen === "change-password" && <ChangePassword />}
+              {panelOpen === "invoice" && <Invoice />}
+            </div>
           </div>
-
         </Card>
       </SidebarProvider>
     </div>

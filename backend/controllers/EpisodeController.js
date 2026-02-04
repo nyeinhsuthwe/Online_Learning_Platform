@@ -2,12 +2,12 @@ const Episode = require('../models/Episode')
 
 const EpisodeController = {
     create: async (req, res) => {
-        const { chapter_id, title, description } = req.body;
+        const { chapter_id, title, description, course_id } = req.body;
         const videoUrl = req.file
             ? `/uploads/video/${req.file.filename}`
             : "";
         const data = await Episode.create({
-            chapter_id, title, videoUrl, description
+            chapter_id, title, videoUrl, description, course_id
         })
         return res.status(200).json({
             message: "Episode Created Successfully!",

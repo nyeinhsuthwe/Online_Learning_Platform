@@ -44,10 +44,11 @@ export function CommentNode({ comment, episodeId }: CommentNodeProps) {
     <div className="mt-4 bg-white p-5 rounded-2xl dark:bg-[#1c2230]  ">
       <div className="flex gap-3">
         <img
-          src="/profile.jpg"
-          alt="User profile"
+          src={comment.user_id?.avatar || "/ava1.jpg"}
+          alt={comment.user_id?.name}
           className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-600"
         />
+
 
         <div className="flex-1 space-y-1 ">
           {/* User Name & Time */}

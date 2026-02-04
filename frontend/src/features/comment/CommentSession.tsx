@@ -8,11 +8,15 @@ import { toast } from "sonner";
 import { useEpisodeStore } from "@/store/episode";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { useUserStore } from "@/store/user";
 
 export function CommentSession() {
     const { episode } = useEpisodeStore();
     const [comment, setComment] = useState("");
     const queryClient = useQueryClient();
+    const { courseId } = useParams<{ courseId: string }>();
+    const user = useUserStore();
 
     const commentMutation = useApiMutation({
         onSuccess: () => {
@@ -24,18 +28,20 @@ export function CommentSession() {
         },
         onError: (err) => {
             toast.error(err.message)
-        }
+        },
     })
 
     const onSubmit = () => {
         commentMutation.mutate({
-            endpoint: `${import.meta.env.VITE_API_URL}/create-comment/${episode?._id}`,
+            endpoint: `${import.meta.env.VITE_API_URL}/create-comment/${courseId}/${episode?._id}`,
             method: "POST",
             body: {
                 content: comment
             }
         })
     }
+
+   
 
     return (
         <div>
@@ -52,7 +58,7 @@ export function CommentSession() {
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-4 sm:mt-6">
                     <img
-                        src="/profile.jpg"
+                        src={user?.user?.avatar || "/ava1.jpg"}
                         alt="User profile"
                         className="w-12 h-12 sm:w-14 sm:h-14 rounded-full mx-auto sm:mx-0"
                     />

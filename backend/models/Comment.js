@@ -10,6 +10,11 @@ const CommentSchema = new mongoose.Schema({
         ref: "Episode",
         required: true
     },
+    course_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+        required: true
+    },
     content: {
         type: String,
         required: true,

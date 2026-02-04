@@ -43,7 +43,7 @@ export function EditAcc() {
     };
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 ">
             <div className="flex flex-col  gap-2 items-center">
                 <img src={user?.avatar || "/ava1.jpg"} alt="User Avatar" className="w-24 h-24 rounded-full object-cover mb-2" />
                 <Button onClick={() => setOpen(true)} className="w-32 h-10 bg-blue-500 hover:bg-primary-dark text-white flex justify-center items-center my-auto">Change Avatar</Button>

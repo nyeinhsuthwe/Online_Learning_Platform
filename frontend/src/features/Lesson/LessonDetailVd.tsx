@@ -14,7 +14,7 @@ export function LessonDetailVd() {
 
     const storedEpisode = useEpisodeStore((state) => state.episode);
     const setEpisode = useEpisodeStore((state) => state.setEpisode);
-    const { data: episodeResponse, refetch } = useEpisodeById(episodeId || "");
+    const { data: episodeResponse, refetch} = useEpisodeById(episodeId || "");
 
     const episode = storedEpisode || episodeResponse?.data;
 
@@ -27,7 +27,6 @@ export function LessonDetailVd() {
             });
         }
     }, [episodeId, episodeResponse, setEpisode, refetch]);
-
 
     if (!episode) return <div>No episode found</div>;
 

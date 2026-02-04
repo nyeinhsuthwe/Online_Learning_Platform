@@ -1,14 +1,15 @@
 import { useCourse } from "@/common/api";
 import { Card } from "@/components/ui/card";
 import { useParams } from "react-router-dom";
+import { DescriptPeriodSkeleton } from "../skeletons/DescriptPeriodSkeleton";
 
 export function DescriptPeriod() {
     const { id } = useParams();
-    const { data } = useCourse();
+    const { data, isLoading } = useCourse();
     const course = data?.data?.find((course) => course._id === id);
 
-    if (!course) {
-        return <div className="text-center text-muted-foreground">Course not found</div>;
+    if (isLoading) {
+        return <DescriptPeriodSkeleton />;
     }
 
     return (

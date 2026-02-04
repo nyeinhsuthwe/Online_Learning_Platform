@@ -43,6 +43,7 @@ export interface Comment {
   updatedAt: string;
   __v: number;
   replies: Comment[]; 
+  avatar?: string;
 }
 
 export interface Enroll {

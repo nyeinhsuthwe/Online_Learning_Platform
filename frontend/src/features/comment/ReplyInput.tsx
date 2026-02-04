@@ -6,6 +6,8 @@ import { useApiMutation } from "@/hooks/useMutation";
 import { toast } from "sonner";
 import { useEpisodeStore } from "@/store/episode";
 import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { useUserStore } from "@/store/user";
 
 interface ReplyInputProps {
   onCancel: () => void;
@@ -16,13 +18,15 @@ export function ReplyInput({ onCancel, parentCommentId }: ReplyInputProps) {
   const { episode } = useEpisodeStore();
   const [reply, setReply] = useState("");
   const queryClient = useQueryClient();
+  const { courseId } = useParams<{ courseId: string }>();
+  const user  = useUserStore();
 
   const replyMutation = useApiMutation({
     onSuccess: () => {
       toast.success("Reply successfully!");
       setReply("");
-      onCancel(); 
-      queryClient.invalidateQueries({queryKey:["comments", episode?._id]})
+      onCancel();
+      queryClient.invalidateQueries({ queryKey: ["comments", episode?._id] })
     },
     onError: (error: unknown) => {
       if (error instanceof Error) {
@@ -37,11 +41,11 @@ export function ReplyInput({ onCancel, parentCommentId }: ReplyInputProps) {
     if (!reply.trim()) return toast.error("Reply cannot be empty");
 
     replyMutation.mutate({
-      endpoint: `${import.meta.env.VITE_API_URL}/create-comment/${episode?._id}`,
+      endpoint: `${import.meta.env.VITE_API_URL}/create-comment/${courseId}/${episode?._id}`,
       method: "POST",
       body: {
         content: reply,
-        parent_comment_id: parentCommentId, 
+        parent_comment_id: parentCommentId,
       },
     });
   };
@@ -50,7 +54,7 @@ export function ReplyInput({ onCancel, parentCommentId }: ReplyInputProps) {
     <Card className="mt-4 bg-sky-50 dark:bg-transparent p-4">
       <div className="flex gap-3">
         <img
-          src="/profile.jpg"
+          src={user?.user?.avatar || "/ava1.jpg"}
           alt="User profile"
           className="w-10 h-10 rounded-full"
         />

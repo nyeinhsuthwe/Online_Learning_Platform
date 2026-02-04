@@ -17,6 +17,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination"
 import { EnrollBtn } from './EnrollBtn'
+import { CourseGridSkeleton } from '../skeletons/CourseGridSkeleton'
 
 
 const topicColors = [
@@ -35,7 +36,7 @@ const CourseCard = (props: React.ComponentProps<typeof Card>) => {
         navigate(`/user/course-detail/${id}`)
     }
     if (courseLoading) {
-        return <div>Loading...</div>
+        return <div> <CourseGridSkeleton /></div>
     }
 
     const ITEMS_PER_PAGE = 6

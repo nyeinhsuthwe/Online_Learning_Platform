@@ -3,11 +3,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { PaymentMethod } from "./PaymentMethod"
 import { useUserStore } from "@/store/user"
+import { ContactSkeleton } from "../skeletons/ContactSkeleton"
 
 
 export function Contact() {
     const { user } = useUserStore()
-    console.log(user)
+    if (!user) {
+        return <div><ContactSkeleton/></div>
+    }
     return (
         <Card className="  p-6 rounded-md bg-transparent">
             <h2 className="text-[20px] font-bold ">

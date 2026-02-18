@@ -26,4 +26,4 @@ dist-ssr
 
 # Ignore all video files
 backend/uploads/video/
-frontend/public/*.mp4
+frontend/public/*.mp4backend/.env

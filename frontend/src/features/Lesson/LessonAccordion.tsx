@@ -4,11 +4,10 @@ import { Clock } from "lucide-react";
 import { VideoIndicator } from "./VideoIndicator";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useChapter, useEpisode, useGetCourseById } from "@/common/api";
+import { EpisodeItem, useChapter, useEpisodesByChapters, useGetCourseById } from "@/common/api";
 import { LessonAccordionSkeleton } from "../skeletons/LessonAccordionSkeleton";
 
 interface Chapter { _id: string; title: string; }
-interface Episode { _id: string; title: string; description: string; videoUrl: string; chapter_id: Chapter; }
 
 export function LessonAccordion() {
     const { courseId, episodeId } = useParams<{ courseId: string; episodeId: string }>();
@@ -17,14 +16,16 @@ export function LessonAccordion() {
 
     const { data: chaptersResponse, isLoading } = useChapter(courseId || "");
     const firstChapterId = chaptersResponse?.data?.[0]?._id || "";
-    const { data: episodesResponse } = useEpisode(firstChapterId);
 
-    const currentChapterId = episodesResponse?.data?.find((ep: Episode) => ep._id === episodeId)?.chapter_id._id;
+    const chapterIds = (chaptersResponse?.data ?? []).map((chapter: Chapter) => chapter._id);
+    const { episodes, isLoading: isEpisodeLoading } = useEpisodesByChapters(chapterIds);
+
+    const currentChapterId = episodes.find((ep: EpisodeItem) => ep._id === episodeId)?.chapter_id._id;
     const [openChapter, setOpenChapter] = useState<string | null>(currentChapterId || firstChapterId || null);
 
-    const grouped: Record<string, { title: string; episodes: Episode[] }> = {};
+    const grouped: Record<string, { title: string; episodes: EpisodeItem[] }> = {};
     chaptersResponse?.data?.forEach((chapter: Chapter) => grouped[chapter._id] = { title: chapter.title, episodes: [] });
-    episodesResponse?.data?.forEach((ep: Episode) => {
+    episodes.forEach((ep: EpisodeItem) => {
         const chapterId = ep.chapter_id._id;
         if (grouped[chapterId]) grouped[chapterId].episodes.push(ep);
     });
@@ -42,19 +43,20 @@ export function LessonAccordion() {
 
     useEffect(() => {
         const map: Record<string, number> = {};
-        episodesResponse?.data?.forEach((ep: Episode) => {
+        episodes.forEach((ep: EpisodeItem) => {
             const saved = localStorage.getItem(`episode-progress-${ep._id}`);
             if (saved) map[ep._id] = parseFloat(saved);
         });
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setProgressMap(map);
-    }, [episodesResponse]);
+    }, [episodes]);
+
 
     const handleClick = (epId: string) => {
         if (epId !== episodeId) navigate(`/user/lesson-detail/${courseId}/${epId}`);
     };
 
-    if (isLoading) {
+    if (isLoading || isEpisodeLoading) {
         return <div><LessonAccordionSkeleton /></div>;
     }
 
@@ -83,7 +85,7 @@ export function LessonAccordion() {
                 type="single"
                 collapsible
                 className="w-full space-y-3 "
-                value={openChapter ?? ""}
+                value={openChapter ?? currentChapterId ?? firstChapterId ?? ""}
                 onValueChange={val => setOpenChapter(val || null)}
             >
                 {Object.entries(grouped).map(([chapterId, chapter]) => (
@@ -123,4 +125,3 @@ export function LessonAccordion() {
         </div>
     );
 }
-

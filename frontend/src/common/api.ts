@@ -1,3 +1,5 @@
+import { useQueries } from "@tanstack/react-query"
+import axios from "@/helper/axios"
 import { useApiQuery } from "@/hooks/useQuery"
 
 export const useCourse = () => {
@@ -21,6 +23,28 @@ export const useEpisode = (chapterId: string) => {
         enabled: !!chapterId,
     })
 }
+
+
+export interface ChapterRef { _id: string; title: string }
+export interface EpisodeItem { _id: string; title: string; description: string; videoUrl: string; chapter_id: ChapterRef }
+
+export const useEpisodesByChapters = (chapterIds: string[]) => {
+  const queries = useQueries({
+    queries: chapterIds.map((chapterId) => ({
+      queryKey: ["episode", chapterId],
+      queryFn: async () => {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/get-episode-list?chapterId=${chapterId}`);
+        return res.data as { data?: EpisodeItem[] };
+      },
+      enabled: !!chapterId,
+    })),
+  });
+
+  const episodes = queries.flatMap((query) => query.data?.data ?? []);
+  const isLoading = queries.some((query) => query.isLoading);
+
+  return { episodes, isLoading, queries };
+};
 
 export const useEpisodeById = (episodeId: string) => {
     return useApiQuery({

@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useChapter, useEpisode, useGetCourseById } from "@/common/api";
 import { LessonAccordionSkeleton } from "../skeletons/LessonAccordionSkeleton";
 
-interface Chapter { _id: string; title: string; }
+interface Chapter { _id: string; title: string; description?: string; }
 interface Episode {
     _id: string;
     title: string;
@@ -35,6 +35,7 @@ export function LessonAccordion() {
     const [openChapter, setOpenChapter] = useState<string | null>(firstChapterId);
     const { data: episodesResponse } = useEpisode(openChapter || "");
     const episodes = episodesResponse?.data || [];
+    const [chapterDescriptionMap, setChapterDescriptionMap] = useState<Record<string, string>>({});
 
     const course = useGetCourseById(courseId || "");
 
@@ -56,6 +57,18 @@ export function LessonAccordion() {
         });
         setProgressMap(map);
     }, [episodes]);
+
+    useEffect(() => {
+        if (!openChapter || !episodes.length) return;
+
+        const description = episodes[0]?.description?.trim();
+        if (!description) return;
+
+        setChapterDescriptionMap((prev) => {
+            if (prev[openChapter] === description) return prev;
+            return { ...prev, [openChapter]: description };
+        });
+    }, [openChapter, episodes]);
 
     const handleClick = (epId: string) => {
         if (epId !== episodeId) navigate(`/user/lesson-detail/${courseId}/${epId}`);
@@ -86,11 +99,12 @@ export function LessonAccordion() {
                 value={openChapter ?? ""}
                 onValueChange={(val) => setOpenChapter(val || null)}
             >
-                {chapters.map((chapter: any) => {
-                    const chapterEpisodes = chapter._id === openChapter ? episodes : [];
+                {chapters.map((chapter: Chapter) => {
+                    const chapterEpisodes: Episode[] = chapter._id === openChapter ? episodes : [];
                     const description =
-                        chapterEpisodes[0]?.description ||
-                        chapter.description ||
+                        chapterEpisodes[0]?.description?.trim() ||
+                        chapterDescriptionMap[chapter._id] ||
+                        chapter.description?.trim() ||
                         "No description"
                     return (
                         <AccordionItem key={chapter._id} value={chapter._id}>

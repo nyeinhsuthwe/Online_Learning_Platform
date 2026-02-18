@@ -1,6 +1,7 @@
 import { useCourse } from "@/common/api"
 import { FeaturedCourseCard } from "./FeaturedCourseCard"
 import { useNavigate } from "react-router-dom"
+import type { Course } from "@/types/type"
 
 export function FeaturedCourses() {
     const { data: courses, isLoading } = useCourse()
@@ -26,7 +27,7 @@ export function FeaturedCourses() {
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses?.data.slice(0, 3).map((course) => (
+        {courses?.data.slice(0, 3).map((course : Course) => (
           <FeaturedCourseCard
             key={course._id}
             course={course}

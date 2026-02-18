@@ -1,6 +1,7 @@
 const Course = require('../models/Course');
 const Episode = require('../models/Episode');
-const Chapter = require("../models/Chapter")
+const Chapter = require("../models/Chapter");
+const mongoose = require('mongoose');
 
 const CourseController = {
     createCourse: async (req, res) => {
@@ -28,8 +29,8 @@ const CourseController = {
 
     getCourse: async (req, res) => {
         try {
+            const userId = req.user.id;
             const courses = await Course.aggregate([
-                // get chapters
                 {
                     $lookup: {
                         from: "chapters",
@@ -38,7 +39,6 @@ const CourseController = {
                         as: "chapters"
                     }
                 },
-                // get episodes via chapter_id
                 {
                     $lookup: {
                         from: "episodes",
@@ -47,7 +47,6 @@ const CourseController = {
                         as: "episodes"
                     }
                 },
-                //enroll
                 {
                     $lookup: {
                         from: "enrolls",
@@ -67,21 +66,39 @@ const CourseController = {
                         as: "paidEnrolls"
                     }
                 },
-
-                // counts
+                {
+                    $lookup: {
+                        from: "watchedepisodes",
+                        let: { courseId: "$_id" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ["$course_id", "$$courseId"] },
+                                            { $eq: ["$user_id", new mongoose.Types.ObjectId(userId)] }
+                                        ]
+                                    }
+                                }
+                            }
+                        ],
+                        as: "watchedEpisodes"
+                    }
+                },
                 {
                     $addFields: {
                         chapterCount: { $size: "$chapters" },
                         episodeCount: { $size: "$episodes" },
-                        enrollCount: { $size: "$paidEnrolls" }
+                        enrollCount: { $size: "$paidEnrolls" },
+                        watchedEpisodesCount: { $size: "$watchedEpisodes" }
                     }
                 },
-                // clean output
                 {
                     $project: {
                         chapters: 0,
                         episodes: 0,
-                        paidEnrolls: 0
+                        paidEnrolls: 0,
+                        watchedEpisodes: 0
                     }
                 }
             ]);

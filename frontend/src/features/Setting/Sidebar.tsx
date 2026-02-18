@@ -12,7 +12,7 @@ export function SettingSidebar({ setPanelOpen }: { setPanelOpen: (panel: string)
     return (
         <Sidebar className=" relative  py-10 bg-card ">
             <SidebarContent className="h-full ">
-                <SidebarGroup className="px-3  bg-card h-full">
+                <SidebarGroup className="px-5  bg-card h-full">
                     <SidebarGroupContent className="bg-card">
                         <SidebarMenu>
                             {items.map((item) => (

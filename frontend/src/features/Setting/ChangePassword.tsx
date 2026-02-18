@@ -5,10 +5,11 @@ import { useApiMutation } from "@/hooks/useMutation";
 import { useUserStore } from "@/store/user";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import { toast } from "sonner";
 
 export function ChangePassword() {
-    const {user} = useUserStore()
+    const { user } = useUserStore()
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -22,8 +23,8 @@ export function ChangePassword() {
             setNewPassword("")
             setConfirmPassword("")
         },
-        onError: (error) => {
-            toast.error(error?.response?.data?.error )
+        onError: (error: any) => {
+            toast.error(error?.response?.data?.error)
         }
     })
 
@@ -83,7 +84,11 @@ export function ChangePassword() {
                     </button>
                 </div>
             </div>
-            <div className="flex flex-col gap-2 items-end">
+
+            <div className="flex justify-between">
+                <div className="text-[14px] text-blue-500 hover:text-blue-600">
+                    <NavLink to="/forgot-password" className="hover:underline">Forgot password?</NavLink>
+                </div>
                 <Button onClick={() => handleChanged()} disabled={updateMutation.isPending} className="w-60 h-12 text-[15px]  bg-green-500 hover:bg-green-600 text-white flex  my-auto">  {updateMutation.isPending ? "Saving..." : "Save Changes"}</Button>
             </div>
         </div>

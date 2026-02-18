@@ -17,10 +17,13 @@ const path = require("path");
 
 const app = express()
 
-const mongoURL =
-    "mongodb+srv://nht:nht612@nyeinhsuthwe.z7sqllh.mongodb.net/learning?retryWrites=true&w=majority&appName=nyeinhsuthwe";
+const MONGO_URL = process.env.MONGO_URL;
 
-mongoose.connect(mongoURL).then(() => {
+if (!MONGO_URL) {
+  throw new Error("MONGO_URI is missing");
+}
+
+mongoose.connect(MONGO_URL).then(() => {
     app.listen(process.env.PORT, () => {
         console.log(`app is running on ${process.env.PORT}`)
     })

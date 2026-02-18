@@ -1,4 +1,4 @@
-import { Library, LogOutIcon, Search, SettingsIcon, UserIcon } from "lucide-react"
+import { Library, LogOutIcon, Search, SettingsIcon} from "lucide-react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { ModeToggle } from "./DarkMode"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -51,11 +51,7 @@ const Navbar = () => {
                         </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-48 mt-3" align="center">
-                        <DropdownMenuItem className="h-10 text-md ">
-                            <UserIcon className="size-5" />
-                            Profile
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="h-10 text-md"  >
+                        <DropdownMenuItem className="h-10 text-md" onClick={()=> navigate("/user/library")}  >
                             <Library className="size-5" />
                             My Library
                         </DropdownMenuItem>

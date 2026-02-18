@@ -1,8 +1,10 @@
 import {
   Accordion,
 } from "@/components/ui/accordion"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { ChapterItem } from "../Lesson/ChapterItems"
+import { useEnrollByUser } from "@/common/api"
+import { useUserStore } from "@/store/user"
 
 interface Chapter {
   _id: string
@@ -15,12 +17,23 @@ interface AccordianProps {
 }
 
 export function Accordian({ chapters }: AccordianProps) {
-  const navigate = useNavigate();
+  const { data, isLoading } = useEnrollByUser();
+  const { user } = useUserStore();
   const { id: courseId } = useParams<{ id: string }>();
 
-  if (!chapters || chapters.length === 0) {
-    return null; 
-  }
+  if (isLoading || !chapters?.length) return null;
+
+  const enrollments = data?.data || [];
+
+  const enroll = enrollments.find(
+    (e: any) =>
+      e.user_id === user?._id &&
+      e.course_id?._id === courseId
+  );
+
+  const hasPaidAccess = enroll?.paymentStatus === "paid";
+
+
 
   return (
     <Accordion type="single" collapsible className="w-full">
@@ -29,10 +42,11 @@ export function Accordian({ chapters }: AccordianProps) {
           key={chapter._id}
           chapter={chapter}
           courseId={courseId || ""}
-          navigate={navigate}
+          locked={!hasPaidAccess}
         />
       ))}
     </Accordion>
   );
 }
+
 

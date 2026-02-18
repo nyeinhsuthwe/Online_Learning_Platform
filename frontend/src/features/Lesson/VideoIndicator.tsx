@@ -5,9 +5,10 @@ interface VideoIndicatorProps {
   index: number;
   isPlaying: boolean;
   progress: number;
+  completed?: boolean;
 }
 
-export function VideoIndicator({ index, isPlaying, progress }: VideoIndicatorProps) {
+export function VideoIndicator({ index, isPlaying, progress, completed }: VideoIndicatorProps) {
   const { theme } = useTheme()
 
   const size = 44;
@@ -15,7 +16,7 @@ export function VideoIndicator({ index, isPlaying, progress }: VideoIndicatorPro
   const strokeWidth = 4;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (progress / 100) * circumference;
-  const isCompleted = progress === 100;
+  const isCompleted = completed ?? progress === 100;
 
   return (
     <div className="relative w-11 h-11 pointer-events-none">

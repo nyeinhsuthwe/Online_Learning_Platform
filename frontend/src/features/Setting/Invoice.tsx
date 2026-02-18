@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useEnrollByUser } from "../../common/api";
+import { useState } from "react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useEnrollByUser } from "../../common/api"
 import {
   Table,
   TableBody,
@@ -9,38 +9,38 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+} from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { InvoiceSkeleton } from "../skeletons/InvoiceSkeleton"
 
 const statusColor: Record<string, string> = {
   paid: "bg-green-100 text-green-700",
   pending: "bg-yellow-100 text-yellow-700",
-};
+}
 
 export function Invoice() {
-  const [page, setPage] = useState(1);
-  const limit = 6;
+  const [page, setPage] = useState(1)
+  const limit = 6
 
-  const { data, isLoading } = useEnrollByUser(page, limit);
+  const { data, isLoading } = useEnrollByUser(page, limit)
 
-  const invoices = data?.data || [];
-  const totalPages = data?.meta?.totalPages || 1;
+  const invoices = data?.data || []
+  const totalPages = data?.meta?.totalPages || 1
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-semibold">My Invoices</h1>
+        <InvoiceSkeleton rows={limit} />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold">My Invoices</h1>
 
-      {isLoading ? (
-        <div className="grid gap-4 md:grid-cols-2">
-          {Array.from({ length: limit }).map((_, i) => (
-            <div
-              key={i}
-              className="h-40 rounded-xl bg-muted animate-pulse"
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="rounded-xl border bg-background">
+      <div className="rounded-xl border bg-background">
         <Table>
           <TableHeader>
             <TableRow>
@@ -53,23 +53,18 @@ export function Invoice() {
           </TableHeader>
 
           <TableBody>
-            {isLoading ? (
-              Array.from({ length: limit }).map((_, i) => (
-                <TableRow key={i}>
-                  <TableCell colSpan={5}>
-                    <div className="h-6 bg-muted rounded animate-pulse" />
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : invoices.length === 0 ? (
+            {invoices.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">
+                <TableCell
+                  colSpan={5}
+                  className="text-center text-muted-foreground"
+                >
                   No invoices found
                 </TableCell>
               </TableRow>
             ) : (
               invoices.map((invoice: any) => (
-                <TableRow key={invoice._id} className="h-15">
+                <TableRow key={invoice._id}>
                   <TableCell className="text-[16px]">
                     {invoice.course_id?.title ?? "Course"}
                   </TableCell>
@@ -100,7 +95,6 @@ export function Invoice() {
           </TableBody>
         </Table>
       </div>
-      )}
 
       {/* Pagination */}
       <div className="flex justify-center gap-2 mt-12">
@@ -109,7 +103,7 @@ export function Invoice() {
           disabled={page === 1}
           onClick={() => setPage((p) => p - 1)}
         >
-        <ChevronLeft/>
+          <ChevronLeft />
         </Button>
 
         <Button
@@ -117,9 +111,9 @@ export function Invoice() {
           disabled={page === totalPages}
           onClick={() => setPage((p) => p + 1)}
         >
-          <ChevronRight/>
+          <ChevronRight />
         </Button>
       </div>
     </div>
-  );
+  )
 }

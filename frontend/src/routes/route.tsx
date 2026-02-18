@@ -10,8 +10,11 @@ import { LessonDetail } from '@/features/Lesson/LessonDetail';
 import { Enroll } from '@/pages/User/Enroll';
 import { Setting } from '@/pages/User/Setting';
 import { EditAcc } from '@/features/Setting/EditAcc';
-import { ChangePassword } from '@/features/Setting/ChangePassword';
 import { Invoice } from '@/features/Setting/Invoice';
+import { Library } from '@/pages/User/Library';
+import PasswordForgotPage from '@/pages/Auth/ForgotPassword';
+import { ChangePassword } from '@/features/Setting/ChangePassword';
+import ResetPasswordPage from '@/pages/Auth/ResetPasswordPage';
 
 const route = createBrowserRouter([
   {
@@ -20,11 +23,19 @@ const route = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />
+    element: <Login />,
   },
   {
     path: "/register",
     element: <Register />
+  },
+  {
+    path: "/forgot-password",
+    element: <PasswordForgotPage/>
+  },
+  {
+    path: '/reset-password/:token',
+    element: <ResetPasswordPage/>
   },
   {
     path: "/user",
@@ -75,6 +86,10 @@ const route = createBrowserRouter([
             element: <Invoice />
           }
         ]
+      },
+      {
+        path: 'library',
+        element: <Library />
       }
 
     ],

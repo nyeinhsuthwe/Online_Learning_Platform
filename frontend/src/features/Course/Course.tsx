@@ -52,6 +52,10 @@ const CourseCard = (props: React.ComponentProps<typeof Card>) => {
             <div className="grid space-y-5 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3  [@media(min-width:1024px)_and_(max-width:1140px)]:grid-cols-2 [@media(min-width:1024px)_and_(max-width:1145px)]:gap-10 items-start justify-items-center">
                 {
                     paginatedCourses?.map((course: typeCard) => {
+                        const progressPercentage = course.episodeCount
+                            ? Math.round((course.watchedEpisodesCount || 0) / course.episodeCount * 100)
+                            : 0;
+
                         return (
                             <Card key={course._id} {...props} className="h-150 w-90 px-4 py-4 gap-4  hover:shadow-[0_4px_12px_rgba(0,0,0,0.03),0_-4px_12px_rgba(0,0,0,0.03)] shadow-sky-200" onClick={() => { clickCard(course._id) }}>
                                 <div className="flex justify-center items-center">
@@ -82,9 +86,10 @@ const CourseCard = (props: React.ComponentProps<typeof Card>) => {
                                     <p className='text-sm  text-red-600 '> 12 students certificated.</p>
                                 </div>
 
+                                {/* Updated progress section */}
                                 <div>
-                                    <p className='mb-3'>20% Completed</p>
-                                    <Progress value={33} />
+                                    <p className='mb-3'>{progressPercentage}% Completed</p>
+                                    <Progress value={progressPercentage} />
                                 </div>
 
                                 <div className='flex'>

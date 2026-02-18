@@ -12,7 +12,8 @@ export interface Card {
   course_id: string;
   chapterCount: number;
   episodeCount: number;
-  enrollCount : number
+  enrollCount: number;
+  watchedEpisodesCount: number
 }
 
 export interface CardApiResponse {
@@ -26,7 +27,7 @@ export interface Review {
     name: string
     avatar?: string
   }
-  courseId : string
+  courseId: string
   rating: number
   comment: string
   createdAt: string
@@ -35,24 +36,39 @@ export interface Review {
 
 export interface Comment {
   _id: string;
-  user_id: { _id: string; name: string };
+  user_id: { _id: string; name: string,   avatar?: string; };
   episode_id: string;
   content: string;
   parent_comment_id: string | null;
   createdAt: string;
   updatedAt: string;
   __v: number;
-  replies: Comment[]; 
-  avatar?: string;
+  replies: Comment[];
+
 }
 
 export interface Enroll {
   _id: string,
   course_id: string,
   user_id: string,
-  paymentStatus : string
+  paymentStatus: string
 }
 
-
+export interface Course {
+  _id: string
+  category_id: string,
+  title: string,
+  topics: string[],
+  price: number,
+  description: string,
+  thumbnailUrl: string,
+  chapterCount: number,
+  episodeCount: number,
+  enrollCount: number,
+  createdAt: string,
+  updatedAt: string,
+  __v: number,
+  course_id : string
+}
 
 

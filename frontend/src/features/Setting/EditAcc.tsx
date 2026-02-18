@@ -4,12 +4,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AVATARS } from "@/constant/avatar";
 import { useApiMutation } from "@/hooks/useMutation";
-import { useUserStore } from "@/store/user";
+import { useUserStore} from "@/store/user";
 import { useState } from "react";
 import { toast } from "sonner";
+import { EditAccSkeleton } from "../skeletons/EditAccSkeleton";
 
 export function EditAcc() {
-    const { user, updateUser } = useUserStore()
+    const { user, updateUser, isLoading } = useUserStore()
     const [open, setOpen] = useState(false);
 
     const handleSelectAvatar = (avatar: string) => {
@@ -17,16 +18,14 @@ export function EditAcc() {
         setOpen(false);
     };
     const updateMutation = useApiMutation({
-        onSuccess: (res) => {
-            updateUser(res );
+        onSuccess: (res : any) => {
+            updateUser(res);
             toast.success("Profile updated successfully");
         },
         onError: (err) => {
             toast.error(err.message || "Update failed");
         },
     });
-
-
 
     const handleSave = () => {
         updateMutation.mutate({
@@ -41,6 +40,11 @@ export function EditAcc() {
             },
         });
     };
+
+    if(isLoading){
+        return <div><EditAccSkeleton /></div>
+    }
+   
 
     return (
         <div className="flex flex-col gap-6 ">

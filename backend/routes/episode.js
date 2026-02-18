@@ -8,5 +8,4 @@ router.delete('/delete-episode/:id', EpisodeController.delete)
 router.get('/get-episode-list', EpisodeController.EpisodeList)
 router.get("/get-episode/:id", EpisodeController.getEpisodeById);
 
-
 module.exports = router

@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: online_learning_backend
+    environment:
+      - PORT=8000
+      - MONGO_URI=mongodb+srv://nht:nht612@nyeinhsuthwe.z7sqllh.mongodb.net/learning?retryWrites=true&w=majority&appName=nyeinhsuthwe
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: online_learning_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: unless-stopped

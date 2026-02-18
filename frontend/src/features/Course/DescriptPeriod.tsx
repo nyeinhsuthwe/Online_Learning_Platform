@@ -2,11 +2,12 @@ import { useCourse } from "@/common/api";
 import { Card } from "@/components/ui/card";
 import { useParams } from "react-router-dom";
 import { DescriptPeriodSkeleton } from "../skeletons/DescriptPeriodSkeleton";
+import type { Course } from "@/types/type";
 
 export function DescriptPeriod() {
     const { id } = useParams();
-    const { data, isLoading } = useCourse();
-    const course = data?.data?.find((course) => course._id === id);
+    const { data , isLoading } = useCourse();
+    const course = data?.data?.find((course :Course ) => course._id === id);
 
     if (isLoading) {
         return <DescriptPeriodSkeleton />;

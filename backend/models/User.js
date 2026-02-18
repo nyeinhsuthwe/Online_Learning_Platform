@@ -32,7 +32,9 @@ const UserSchema = new schema({
         type: String,
         enum: ["user", "admin"],
         default: "user",
-    }
+    },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
 })
 
 UserSchema.statics.register = async function (name, email, password, phone, confirmPassword) {

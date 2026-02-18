@@ -1,19 +1,19 @@
 import { useEpisode } from "@/common/api"
 import { Card } from "@/components/ui/card"
 import { AccordionContent, AccordionItem, AccordionTrigger } from "../../components/ui/accordion"
-import { Play } from "lucide-react"
-import type { useNavigate } from "react-router-dom"
+import { Lock, Play } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 import { useEpisodeStore } from "@/store/episode"
-import { useEffect } from "react"
+
+interface Chapter {
+    _id: string
+    title: string
+}
 
 interface ChapterItemProps {
     chapter: Chapter
     courseId: string
-    navigate: ReturnType<typeof useNavigate>
-}
-interface Chapter {
-    _id: string
-    title: string
+    locked: boolean
 }
 
 interface Episode {
@@ -21,17 +21,13 @@ interface Episode {
     title: string
     description: string
     videoUrl: string
-    chapter_id: Chapter
+    chapter_id: string
 }
 
-export function ChapterItem({ chapter, courseId, navigate }: ChapterItemProps) {
+export function ChapterItem({ chapter, courseId, locked }: ChapterItemProps) {
     const { data: episodesResponse } = useEpisode(chapter._id || "")
     const setEpisode = useEpisodeStore((state) => state.setEpisode)
-    useEffect(() => {
-        if (episodesResponse) {
-            setEpisode(episodesResponse);
-        }
-    }, [episodesResponse, setEpisode]);
+    const navigate = useNavigate()
     const episodes: Episode[] = episodesResponse?.data || []
 
     return (
@@ -47,10 +43,15 @@ export function ChapterItem({ chapter, courseId, navigate }: ChapterItemProps) {
                 {episodes.map((ep: Episode, index: number) => (
                     <Card
                         key={ep._id}
-                        className="p-3 cursor-pointer"
+                        className={`p-3 transition ${locked
+                                ? "cursor-not-allowed opacity-60"
+                                : "cursor-pointer hover:shadow-md"
+                            }`}
                         onClick={() => {
+                            if (locked) return;
+
                             setEpisode(ep);
-                            navigate(`/user/lesson-detail/${courseId}/${ep._id}`)
+                            navigate(`/user/lesson-detail/${courseId}/${ep._id}`);
                         }}
                     >
                         <div className="flex justify-between items-center w-full">
@@ -61,8 +62,11 @@ export function ChapterItem({ chapter, courseId, navigate }: ChapterItemProps) {
                                 <span className="font-semibold text-gray-600 dark:text-white hover:text-sky-600">{ep.title}</span>
                             </div>
 
-                            <span className="w-11 h-9 bg-primary-dark text-white flex items-center justify-center rounded">
-                                <Play size={18} />
+                            <span
+                                className={`w-11 h-9 flex items-center justify-center rounded ${locked ? "bg-gray-400" : "bg-primary-dark"
+                                    }`}
+                            >
+                                {locked ? <Lock size={18} /> : <Play size={18} />}
                             </span>
                         </div>
                     </Card>

@@ -1,13 +1,19 @@
 import { Card } from "@/components/ui/card";
 import { SettingSidebar } from "@/features/Setting/Sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChangePassword } from "@/features/Setting/ChangePassword";
 import { EditAcc } from "@/features/Setting/EditAcc";
 import { Invoice } from "@/features/Setting/Invoice";
 
+
 export function Setting() {
-  const [panelOpen, setPanelOpen] = useState("edit-acc");
+   const [panelOpen, setPanelOpen] = useState(() => {
+    return localStorage.getItem("settings-panel") || "edit-acc";
+  });
+  useEffect(() => {
+    localStorage.setItem("settings-panel", panelOpen);
+  }, [panelOpen]);
 
   return (
     <div className="w-full">
@@ -16,7 +22,7 @@ export function Setting() {
       </span>
 
       <SidebarProvider>
-        <Card className="flex flex-row w-full max-w-5xl mx-auto gap-0">
+        <Card className="flex flex-row w-full max-w-5xl mx-auto px-0 md:px-5 ">
 
           {/* Sidebar */}
           <div className="">

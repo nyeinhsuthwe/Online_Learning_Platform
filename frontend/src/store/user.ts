@@ -18,6 +18,7 @@ interface UserState {
   setUser: (user: User, token?: string) => void;
   updateUser: (user: Partial<User>) => void;
   logout: () => void;
+  isLoading?: boolean;
 }
 
 export const useUserStore = create<UserState>()(

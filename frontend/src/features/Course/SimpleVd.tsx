@@ -4,10 +4,14 @@ import { CourseReviews } from "../Review/CarouselReview";
 import { useCourse } from "@/common/api";
 import { SimpleVdSkeleton } from "../skeletons/SimpleVdSkeleton";
 
+
 export function SimpleVd() {
   const { id: courseId } = useParams<{ id: string }>();
   const { isLoading } = useCourse();
-
+  
+  if (!courseId) {
+    return null;
+  }
   if (isLoading) {
     return <SimpleVdSkeleton />;
   }

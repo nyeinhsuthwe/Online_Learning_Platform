@@ -7,6 +7,7 @@ interface ApiResponse<T> {
   data: T
   links?: unknown
   success?: boolean
+  error? : boolean
   msg?: string
   token?: string
 }

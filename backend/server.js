@@ -14,6 +14,8 @@ const Review = require("./routes/review")
 const Comment = require("./routes/comment")
 const User = require("./routes/user")
 const path = require("path");
+const bcrypt = require("bcrypt");
+const UserModel = require("./models/User");
 
 const app = express()
 
@@ -24,10 +26,44 @@ if (!MONGO_URL) {
 }
 
 mongoose.connect(MONGO_URL).then(() => {
-    app.listen(process.env.PORT, () => {
-        console.log(`app is running on ${process.env.PORT}`)
-    })
+    seedDefaultAdmin().then(() => {
+        app.listen(process.env.PORT, () => {
+            console.log(`app is running on ${process.env.PORT}`)
+        })
+    }).catch((error) => {
+        console.error("Failed to seed default admin:", error.message);
+        process.exit(1);
+    });
 })
+
+async function seedDefaultAdmin() {
+    const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || "admin@online-learning.local";
+    const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD || "Admin123456!";
+    const adminName = process.env.DEFAULT_ADMIN_NAME || "System Admin";
+
+    const existingUser = await UserModel.findOne({ email: adminEmail });
+
+    if (!existingUser) {
+        const salt = await bcrypt.genSalt();
+        const hashValue = await bcrypt.hash(adminPassword, salt);
+
+        await UserModel.create({
+            name: adminName,
+            email: adminEmail,
+            password: hashValue,
+            role: "admin",
+        });
+
+        console.log(`Default admin created: ${adminEmail}`);
+        return;
+    }
+
+    if (existingUser.role !== "admin") {
+        existingUser.role = "admin";
+        await existingUser.save();
+        console.log(`Existing user promoted to admin: ${adminEmail}`);
+    }
+}
 
 app.use(cors({
     origin: ["http://localhost:5173", "http://192.168.100.163:5173"],
@@ -55,6 +91,5 @@ app.use("/api", Enroll)
 app.use("/api", Review)
 app.use("/api", Comment)
 app.use("/api", User)
-
 
 

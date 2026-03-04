@@ -29,43 +29,39 @@ const CourseController = {
 
     getCourse: async (req, res) => {
         try {
-            const userId = req.user.id;
+            const userId = new mongoose.Types.ObjectId(req.user.id);
+
             const courses = await Course.aggregate([
+                // join chapters
                 {
                     $lookup: {
                         from: "chapters",
                         localField: "_id",
                         foreignField: "course_id",
-                        as: "chapters"
-                    }
+                        as: "chapters",
+                    },
                 },
+                // join episodes
                 {
                     $lookup: {
                         from: "episodes",
                         localField: "chapters._id",
                         foreignField: "chapter_id",
-                        as: "episodes"
-                    }
+                        as: "episodes",
+                    },
                 },
+                // join enrolls
                 {
                     $lookup: {
                         from: "enrolls",
                         let: { courseId: "$_id" },
                         pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $and: [
-                                            { $eq: ["$course_id", "$$courseId"] },
-                                            { $eq: ["$paymentStatus", "paid"] }
-                                        ]
-                                    }
-                                }
-                            }
+                            { $match: { $expr: { $and: [{ $eq: ["$course_id", "$$courseId"] }, { $eq: ["$paymentStatus", "paid"] }] } } }
                         ],
-                        as: "paidEnrolls"
-                    }
+                        as: "paidEnrolls",
+                    },
                 },
+                // join watched episodes
                 {
                     $lookup: {
                         from: "watchedepisodes",
@@ -76,21 +72,47 @@ const CourseController = {
                                     $expr: {
                                         $and: [
                                             { $eq: ["$course_id", "$$courseId"] },
-                                            { $eq: ["$user_id", new mongoose.Types.ObjectId(userId)] }
+                                            { $eq: ["$user_id", userId] }
                                         ]
                                     }
                                 }
-                            }
+                            },
+                            { $project: { progress: 1, completed: 1 } }
                         ],
-                        as: "watchedEpisodes"
+                        as: "userWatchedEpisodes"
                     }
                 },
+                // calculate counts and progress
                 {
                     $addFields: {
                         chapterCount: { $size: "$chapters" },
                         episodeCount: { $size: "$episodes" },
                         enrollCount: { $size: "$paidEnrolls" },
-                        watchedEpisodesCount: { $size: "$watchedEpisodes" }
+                        completedEpisodeCount: {
+                            $size: "$userWatchedEpisodes"
+                        },
+                        progress: {
+                            $cond: [
+                                { $eq: [{ $size: "$episodes" }, 0] },
+                                0,
+                                {
+                                    $round: [
+                                        {
+                                            $multiply: [
+                                                {
+                                                    $divide: [
+                                                        { $size: "$userWatchedEpisodes" },
+                                                        { $size: "$episodes" }
+                                                    ]
+                                                },
+                                                100
+                                            ]
+                                        },
+                                        0
+                                    ]
+                                }
+                            ]
+                        }
                     }
                 },
                 {
@@ -98,17 +120,18 @@ const CourseController = {
                         chapters: 0,
                         episodes: 0,
                         paidEnrolls: 0,
-                        watchedEpisodes: 0
+                        userWatchedEpisodes: 0,
                     }
                 }
             ]);
 
-            return res.status(200).json({ data: courses });
 
+            return res.status(200).json({ data: courses });
         } catch (error) {
             return res.status(400).json({ error: error.message });
         }
     },
+
 
 
     getCourseById: async (req, res) => {

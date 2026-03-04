@@ -3,89 +3,140 @@ import { Card } from "@/components/ui/card";
 import { Clock } from "lucide-react";
 import { VideoIndicator } from "./VideoIndicator";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { EpisodeItem, useChapter, useEpisodesByChapters, useGetCourseById } from "@/common/api";
+import { useEffect, useMemo, useState } from "react";
+import { useAllEpisodes, useChapter, useGetCourseById } from "@/common/api";
 import { LessonAccordionSkeleton } from "../skeletons/LessonAccordionSkeleton";
 
-interface Chapter { _id: string; title: string; }
+interface Chapter {
+    _id: string;
+    title: string;
+}
+
+interface Episode {
+    _id: string;
+    title: string;
+    description: string;
+    videoUrl: string;
+    chapter_id: Chapter;
+    duration: number;
+}
 
 export function LessonAccordion() {
     const { courseId, episodeId } = useParams<{ courseId: string; episodeId: string }>();
-
     const navigate = useNavigate();
 
     const { data: chaptersResponse, isLoading } = useChapter(courseId || "");
-    const firstChapterId = chaptersResponse?.data?.[0]?._id || "";
+    const { data: episodesResponse } = useAllEpisodes(courseId || "");
+    const course = useGetCourseById(courseId || "");
 
-    const chapterIds = (chaptersResponse?.data ?? []).map((chapter: Chapter) => chapter._id);
-    const { episodes, isLoading: isEpisodeLoading } = useEpisodesByChapters(chapterIds);
-
-    const currentChapterId = episodes.find((ep: EpisodeItem) => ep._id === episodeId)?.chapter_id._id;
-    const [openChapter, setOpenChapter] = useState<string | null>(currentChapterId || firstChapterId || null);
-
-    const grouped: Record<string, { title: string; episodes: EpisodeItem[] }> = {};
-    chaptersResponse?.data?.forEach((chapter: Chapter) => grouped[chapter._id] = { title: chapter.title, episodes: [] });
-    episodes.forEach((ep: EpisodeItem) => {
-        const chapterId = ep.chapter_id._id;
-        if (grouped[chapterId]) grouped[chapterId].episodes.push(ep);
-    });
-
-    const course = useGetCourseById(courseId || "")
+    const [openChapter, setOpenChapter] = useState<string | null>(null);
     const [progressMap, setProgressMap] = useState<Record<string, number>>({});
+
+    const grouped = useMemo(() => {
+        if (!chaptersResponse?.data || !episodesResponse?.data) return {};
+
+        const result: Record<string, { title: string; episodes: Episode[] }> = {};
+
+        chaptersResponse.data.forEach((chapter: Chapter) => {
+            result[chapter._id] = {
+                title: chapter.title,
+                episodes: [],
+            };
+        });
+
+        episodesResponse.data.forEach((ep: Episode) => {
+            const chapterId = ep.chapter_id._id;
+            if (result[chapterId]) {
+                result[chapterId].episodes.push(ep);
+            }
+        });
+
+        return result;
+    }, [chaptersResponse, episodesResponse]);
+
+    useEffect(() => {
+        if (!episodesResponse?.data) return;
+
+        if (episodeId) {
+            const current = episodesResponse.data.find(
+                (ep: Episode) => ep._id === episodeId
+            );
+
+            if (current?.chapter_id?._id) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
+                setOpenChapter(current.chapter_id._id);
+                return;
+            }
+        }
+
+        if (chaptersResponse?.data?.length) {
+            setOpenChapter(chaptersResponse.data[0]._id);
+        }
+    }, [episodeId, episodesResponse, chaptersResponse]);
+
     useEffect(() => {
         const handler = (e: CustomEvent) => {
             const { episodeId, progress } = e.detail;
             setProgressMap(prev => ({ ...prev, [episodeId]: progress }));
         };
+
         window.addEventListener("episode-progress-update", handler as EventListener);
-        return () => window.removeEventListener("episode-progress-update", handler as EventListener);
+        return () =>
+            window.removeEventListener("episode-progress-update", handler as EventListener);
     }, []);
 
     useEffect(() => {
+        if (!episodesResponse?.data) return;
+
         const map: Record<string, number> = {};
-        episodes.forEach((ep: EpisodeItem) => {
+        episodesResponse.data.forEach((ep: Episode) => {
             const saved = localStorage.getItem(`episode-progress-${ep._id}`);
             if (saved) map[ep._id] = parseFloat(saved);
         });
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setProgressMap(map);
-    }, [episodes]);
-
+    }, [episodesResponse]);
 
     const handleClick = (epId: string) => {
-        if (epId !== episodeId) navigate(`/user/lesson-detail/${courseId}/${epId}`);
+        if (epId !== episodeId) {
+            navigate(`/user/lesson-detail/${courseId}/${epId}`);
+        }
     };
 
-    if (isLoading || isEpisodeLoading) {
-        return <div><LessonAccordionSkeleton /></div>;
+    const formatDuration = (seconds: number) => {
+        if (!seconds || seconds <= 0) return "0:00";
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, "0")}`;
+    };
+
+    if (isLoading) {
+        return <LessonAccordionSkeleton />;
     }
-
-
 
     return (
         <div className="space-y-5">
-            <Card
-                className=" p-6 rounded-xl transition bg-linear-to-br from-blue-500 to-blue-200 dark:from-slate-900 dark:to-slate-800 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+            <Card className="p-6 rounded-xl transition bg-linear-to-br from-blue-500 to-blue-200 dark:from-slate-900 dark:to-slate-800 shadow-sm hover:shadow-md">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 dark:text-blue-400">
                     {course?.data?.data?.title}
                 </h1>
 
                 <p className="mt-2 text-sm font-medium text-blue-100 dark:text-slate-300">
                     Publish Date –{" "}
-                    {new Date(course?.data?.data?.createdAt).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                    })}
+                    {course?.data?.data?.createdAt &&
+                        new Date(course.data.data.createdAt).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                        })}
                 </p>
             </Card>
-
 
             <Accordion
                 type="single"
                 collapsible
-                className="w-full space-y-3 "
-                value={openChapter ?? currentChapterId ?? firstChapterId ?? ""}
+                className="w-full space-y-3"
+                value={openChapter ?? ""}
                 onValueChange={val => setOpenChapter(val || null)}
             >
                 {Object.entries(grouped).map(([chapterId, chapter]) => (
@@ -94,7 +145,9 @@ export function LessonAccordion() {
                             <div className="flex items-center gap-3">
                                 <span>{chapter.title}</span>
                                 <div className="h-5 w-0.5 bg-gray-400" />
-                                <span>{chapter.episodes[0]?.description ?? "No description"}</span>
+                                <span>
+                                    {chapter.episodes[0]?.description ?? "No description"}
+                                </span>
                             </div>
                         </AccordionTrigger>
 
@@ -102,18 +155,23 @@ export function LessonAccordion() {
                             {chapter.episodes.map((ep, index) => (
                                 <Card
                                     key={ep._id}
-                                    className="gap-3 p-3 shadow-[0_-1px_5px_rgba(0,0,0,0.04),0_1px_5px_rgba(0,0,0,0.04)] shadow-sky-200 cursor-pointer"
+                                    className="gap-3 p-3 cursor-pointer shadow-sky-200"
                                     onClick={() => handleClick(ep._id)}
                                 >
                                     <div className="flex justify-between items-center w-full">
                                         <div className="flex gap-3 items-center">
-                                            <VideoIndicator index={index} isPlaying={episodeId === ep._id} progress={progressMap[ep._id] || 0} />
-                                            <span className="flex hover:text-text-skyblue text-[16px] dark:text-white text-text-secondary font-semibold items-center">
+                                            <VideoIndicator
+                                                index={index}
+                                                isPlaying={episodeId === ep._id}
+                                                progress={progressMap[ep._id] || 0}
+                                            />
+                                            <span className="text-[16px] font-semibold dark:text-white">
                                                 {ep.title}
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-1">
-                                            <Clock size={16} /> 12mins
+                                            <Clock size={16} />
+                                            {formatDuration(ep.duration)}
                                         </div>
                                     </div>
                                 </Card>

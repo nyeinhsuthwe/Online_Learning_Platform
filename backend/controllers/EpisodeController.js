@@ -1,4 +1,5 @@
 const Episode = require('../models/Episode')
+const Chapter = require("../models/Chapter")
 const getVideoDuration = require("../helper/videoDuration");
 
 const EpisodeController = {
@@ -48,6 +49,28 @@ const EpisodeController = {
         }
     },
 
+    EpisodeListByCourse: async (req, res) => {
+        try {
+            const { courseId } = req.query;
+
+            if (!courseId) {
+                return res.status(400).json({ message: "courseId is required" });
+            }
+            const chapters = await Chapter.find({ course_id: courseId }).select("_id");
+
+            const chapterIds = chapters.map(ch => ch._id);
+            const episodes = await Episode.find({
+                chapter_id: { $in: chapterIds }
+            }).populate("chapter_id", "title");
+
+            return res.status(200).json({ data: episodes });
+
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+
+
     getEpisodeById: async (req, res) => {
         try {
             const { id } = req.params;
@@ -56,6 +79,30 @@ const EpisodeController = {
             return res.status(200).json({ data: episode });
         } catch (error) {
             return res.status(400).json({ message: error.message });
+        }
+    },
+
+    updateProgress: async (req, res) => {
+        try {
+            const { userId, courseId, episodeId, progress } = req.body;
+
+            if (!userId || !courseId || !episodeId) {
+                return res.status(400).json({ message: "Missing required fields" });
+            }
+
+            let watched = await WatchedEpisode.findOne({ user_id: userId, episode_id: episodeId });
+
+            if (!watched) {
+                watched = new WatchedEpisode({ user_id: userId, course_id: courseId, episode_id: episodeId });
+            }
+
+            watched.progress = progress;
+            watched.completed = progress >= 90;
+            await watched.save();
+
+            res.status(200).json({ message: "Progress updated", watched });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
     }
 

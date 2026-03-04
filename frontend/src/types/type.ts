@@ -13,7 +13,8 @@ export interface Card {
   chapterCount: number;
   episodeCount: number;
   enrollCount: number;
-  watchedEpisodesCount: number
+  completedEpisodes: number;
+  progress: number
 }
 
 export interface CardApiResponse {

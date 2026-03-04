@@ -4,6 +4,7 @@ const router = express.Router();
 const upload = require('../middlewares/upload');
 const authMiddleware = require('../middlewares/auth');
 const WatchedEpisode = require('../models/WatchedEpisode');
+const Episode = require('../models/Episode');
 
 router.post("/create-course", upload.single("thumbnailUrl"), CourseController.createCourse)
 router.get("/get-course",authMiddleware, CourseController.getCourse)
@@ -22,7 +23,16 @@ router.post(
                 return res.status(200).json({ message: "Episode already marked as watched" });
             }
 
-            await WatchedEpisode.create({ user_id: userId, course_id: courseId, episode_id: episodeId });
+            const episode = await Episode.findById(episodeId).select("duration");
+            await WatchedEpisode.create({
+                user_id: userId,
+                course_id: courseId,
+                episode_id: episodeId,
+                totalSeconds: episode?.duration || 0,
+                watchedSeconds: episode?.duration || 0,
+                progress: 100,
+                completed: true,
+            });
             res.status(201).json({ message: "Episode marked as watched" });
         } catch (err) {
             res.status(400).json({ error: err.message });

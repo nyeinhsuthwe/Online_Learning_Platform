@@ -29,7 +29,7 @@ async function sendEmail({ to, subject, html }) {
   });
 
   await transporter.sendMail({
-    from: `"My App" <${process.env.EMAIL_USER}>`,
+    from: `"Online Learning Platform" <${process.env.EMAIL_USER}>`,
     to,
     subject,
     html,

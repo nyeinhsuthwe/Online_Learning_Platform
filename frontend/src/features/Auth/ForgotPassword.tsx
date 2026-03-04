@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, type FormEvent } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -13,43 +13,38 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import axios from "axios"
 import { NavLink } from "react-router-dom"
+import { useApiMutation } from "@/hooks/useMutation"
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("")
-  const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
   const [error, setError] = useState("")
 
-  const handleSubmit = async (e: any) => {
+  const forgotPasswordMutation = useApiMutation<{ email: string }, { message?: string }>({
+    onSuccess: (res) => {
+      setMessage(res?.data?.message || "A reset link has been sent to your email.")
+    },
+    onError: (err: any) => {
+      setError(err?.response?.data?.message || "Something went wrong. Please try again.")
+    },
+  })
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setMessage("")
     setError("")
 
     if (!email) {
-      return setError("Email is required")
+      setError("Email is required")
+      return
     }
 
-    try {
-      setLoading(true)
-
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/forgot-password`,
-        { email }
-      )
-
-      setMessage(
-        res.data.message ||
-        "A reset link has been sent to your emial."
-      )
-    } catch (err: any) {
-      setError(
-        err.response?.data?.message || "Something went wrong. Please try again."
-      )
-    } finally {
-      setLoading(false)
-    }
+    forgotPasswordMutation.mutate({
+      endpoint: `${import.meta.env.VITE_API_URL}/forgot-password`,
+      method: "POST",
+      body: { email },
+    })
   }
 
   return (
@@ -92,10 +87,10 @@ const ForgotPassword = () => {
               <Field>
                 <Button
                   type="submit"
-                  disabled={loading}
+                  disabled={forgotPasswordMutation.isPending}
                   className="bg-primary-dark text-white hover:bg-primary-hover w-full"
                 >
-                  {loading ? "Sending..." : "Send reset link"}
+                  {forgotPasswordMutation.isPending ? "Sending..." : "Send reset link"}
                 </Button>
 
                 <FieldDescription className="px-6 text-center mt-2">

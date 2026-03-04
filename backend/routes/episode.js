@@ -7,5 +7,7 @@ router.post('/create-episode', upload.single("videoUrl"),EpisodeController.creat
 router.delete('/delete-episode/:id', EpisodeController.delete)
 router.get('/get-episode-list', EpisodeController.EpisodeList)
 router.get("/get-episode/:id", EpisodeController.getEpisodeById);
+router.get("/get-episode-by-course", EpisodeController.EpisodeListByCourse)
+router.post('/:episodeId/progress', EpisodeController.updateProgress);
 
 module.exports = router

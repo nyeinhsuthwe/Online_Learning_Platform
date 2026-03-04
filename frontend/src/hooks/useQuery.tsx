@@ -10,11 +10,12 @@ interface QueryPayload {
 }
 
 export function useApiQuery<TData = any>(
-  { endpoint, method = "GET", queryKey, params }: QueryPayload,
+  { endpoint, method = "GET", queryKey, params, enabled = true }: QueryPayload,
   options?: any
 ) {
   return useQuery<TData>({
     queryKey: queryKey ?? [endpoint, params],
+    enabled,
     queryFn: async () => {
       if (method === "POST") {
         const res = await axios.post(endpoint, params);

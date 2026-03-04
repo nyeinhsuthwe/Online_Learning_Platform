@@ -15,7 +15,7 @@ export function Reply() {
   return (
     <div className="mt-6 space-y-4">
       {topComments.map((comment: Comment) => (
-        <CommentNode comment={comment} episodeId={episode?._id || ""} />
+        <CommentNode key={comment._id} comment={comment} episodeId={episode?._id || ""} />
 
       ))}
     </div>

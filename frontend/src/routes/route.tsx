@@ -15,6 +15,13 @@ import { Library } from '@/pages/User/Library';
 import PasswordForgotPage from '@/pages/Auth/ForgotPassword';
 import { ChangePassword } from '@/features/Setting/ChangePassword';
 import ResetPasswordPage from '@/pages/Auth/ResetPasswordPage';
+import LayoutForAdmin from '@/layout/Admin';
+import Dashboard from '@/pages/Admin/Dashboard';
+import Categories from '@/pages/Admin/Categories';
+import Courses from '@/pages/Admin/Courses';
+import ChaptersEpisodes from '@/pages/Admin/ChaptersEpisodes';
+import Enrollments from '@/pages/Admin/Enrollments';
+import Users from '@/pages/Admin/Users';
 
 const route = createBrowserRouter([
   {
@@ -92,6 +99,40 @@ const route = createBrowserRouter([
         element: <Library />
       }
 
+    ],
+  },
+  {
+    path: "/admin",
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <LayoutForAdmin />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Dashboard />,
+      },
+      {
+        path: "categories",
+        element: <Categories />,
+      },
+      {
+        path: "courses",
+        element: <Courses />,
+      },
+      {
+        path: "content",
+        element: <ChaptersEpisodes />,
+      },
+      {
+        path: "enrollments",
+        element: <Enrollments />,
+      },
+      {
+        path: "users",
+        element: <Users />,
+      },
     ],
   },
 ])

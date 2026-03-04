@@ -6,6 +6,7 @@ import { useRef, useEffect } from "react";
 import { useEpisodeById } from "@/common/api";
 import { ReviewDialog } from "../Review/ReviewDialog";
 import { useEpisodeStore } from "@/store/episode";
+import axios from "@/helper/axios";
 
 
 export function LessonDetailVd() {
@@ -53,13 +54,17 @@ export function LessonDetailVd() {
     };
 
     const handleVideoEnded = () => {
-        if (!episodeId) return;
+        if (!episodeId || !courseId) return;
 
         localStorage.setItem(`episode-progress-${episodeId}`, "100");
         window.dispatchEvent(new CustomEvent("video-state-change", { detail: { isPlaying: false } }));
         window.dispatchEvent(
             new CustomEvent("episode-progress-update", { detail: { episodeId, progress: 100 } })
         );
+
+        axios.post(`${import.meta.env.VITE_API_URL}/course/${courseId}/episode/${episodeId}/watch`).catch(() => {
+            // Keep UI flow working even if watched sync fails.
+        });
     };
 
     return (

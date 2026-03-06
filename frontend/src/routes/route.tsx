@@ -22,6 +22,8 @@ import Courses from '@/pages/Admin/Courses';
 import ChaptersEpisodes from '@/pages/Admin/ChaptersEpisodes';
 import Enrollments from '@/pages/Admin/Enrollments';
 import Users from '@/pages/Admin/Users';
+import SupportChat from '@/pages/Admin/SupportChat';
+import ChatPage from '@/pages/User/Chat';
 
 const route = createBrowserRouter([
   {
@@ -97,6 +99,10 @@ const route = createBrowserRouter([
       {
         path: 'library',
         element: <Library />
+      },
+      {
+        path: "chat",
+        element: <ChatPage />,
       }
 
     ],
@@ -132,6 +138,10 @@ const route = createBrowserRouter([
       {
         path: "users",
         element: <Users />,
+      },
+      {
+        path: "support-chat",
+        element: <SupportChat />,
       },
     ],
   },

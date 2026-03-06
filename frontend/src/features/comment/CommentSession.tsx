@@ -51,6 +51,7 @@ export function CommentSession() {
                     <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-text-primary dark:text-white">
                         Answer & Questions
                     </span>
+
                     <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">
                         If you have a question, you can ask here!
                     </span>

@@ -41,6 +41,7 @@ const Navbar = () => {
             <ul className="flex gap-6 text-foreground text-sm font-semibold">
                 <NavLink className="cursor-pointer hover:text-primary-hover transition" to={"/user"}> Home</NavLink>
                 <NavLink className="cursor-pointer hover:text-primary-hover transition" to={"/user/course"}> Course</NavLink>
+                <NavLink className="cursor-pointer hover:text-primary-hover transition" to={"/user/chat"}> Chat</NavLink>
             </ul>
 
             <div className="flex gap-3  items-center justify-cente">

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useApiMutation } from "@/hooks/useMutation";
 import { useUserStore } from "@/store/user";
-import { LayoutDashboard, BookOpen, FolderTree, Wallet, Users, LogOut, Tags } from "lucide-react";
+import { LayoutDashboard, BookOpen, FolderTree, Wallet, Users, LogOut, Tags, MessageSquare } from "lucide-react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
@@ -14,6 +14,7 @@ const menuItems = [
   { to: "/admin/content", icon: FolderTree, label: "Chapters & Episodes" },
   { to: "/admin/enrollments", icon: Wallet, label: "Enrollments" },
   { to: "/admin/users", icon: Users, label: "Users" },
+  { to: "/admin/support-chat", icon: MessageSquare, label: "Support Chat" },
 ];
 
 const LayoutForAdmin = () => {

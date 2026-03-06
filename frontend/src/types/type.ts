@@ -72,4 +72,31 @@ export interface Course {
   course_id : string
 }
 
+export interface ChatParticipant {
+  _id: string;
+  name: string;
+  avatar?: string;
+  role: "user" | "admin";
+}
 
+export interface ChatThread {
+  _id: string;
+  type: "support";
+  student_id: ChatParticipant;
+  admin_id: ChatParticipant;
+  course_id?: string | null;
+  episode_id?: string | null;
+  last_message: string;
+  last_message_at: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChatMessage {
+  _id: string;
+  thread_id: string;
+  sender_id: ChatParticipant;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}

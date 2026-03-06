@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const cors = require('cors');
+const http = require("http");
 require("dotenv").config();
 const CategoryRoute = require('./routes/category')
 const AuthRoute = require("./routes/auth")
@@ -13,11 +14,15 @@ const Enroll = require("./routes/enroll")
 const Review = require("./routes/review")
 const Comment = require("./routes/comment")
 const User = require("./routes/user")
+const Chat = require("./routes/chat")
 const path = require("path");
 const bcrypt = require("bcrypt");
 const UserModel = require("./models/User");
+const { Server } = require("socket.io");
+const { registerChatSocket } = require("./socket/chatSocket");
 
 const app = express()
+const httpServer = http.createServer(app);
 
 const MONGO_URL = process.env.MONGO_URL;
 
@@ -27,7 +32,7 @@ if (!MONGO_URL) {
 
 mongoose.connect(MONGO_URL).then(() => {
     seedDefaultAdmin().then(() => {
-        app.listen(process.env.PORT, () => {
+        httpServer.listen(process.env.PORT, () => {
             console.log(`app is running on ${process.env.PORT}`)
         })
     }).catch((error) => {
@@ -91,5 +96,14 @@ app.use("/api", Enroll)
 app.use("/api", Review)
 app.use("/api", Comment)
 app.use("/api", User)
+app.use("/api", Chat)
 
+const io = new Server(httpServer, {
+    cors: {
+        origin: ["http://localhost:5173", "http://192.168.100.163:5173"],
+        methods: ["GET", "POST"],
+        credentials: true,
+    },
+});
 
+registerChatSocket(io);

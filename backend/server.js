@@ -98,6 +98,15 @@ app.use("/api", Comment)
 app.use("/api", User)
 app.use("/api", Chat)
 
+// Serve React frontend build
+const frontendPath = path.join(__dirname, "../frontend/dist");
+app.use(express.static(frontendPath));
+
+// For any other route, serve index.html (React handles routing)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
+
 const io = new Server(httpServer, {
     cors: {
         origin: ["http://localhost:5173", "http://192.168.100.163:5173"],

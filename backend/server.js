@@ -102,7 +102,7 @@ app.use("/api", Chat)
 const frontendPath = path.join(__dirname, "../frontend/dist");
 app.use(express.static(frontendPath));
 
-// For any other route, serve index.html (React handles routing)
+
 app.use((req, res, next) => {
   if (!req.path.startsWith("/api")) {
     res.sendFile(path.join(frontendPath, "index.html"));
@@ -110,6 +110,7 @@ app.use((req, res, next) => {
     next();
   }
 });
+
 
 const io = new Server(httpServer, {
     cors: {

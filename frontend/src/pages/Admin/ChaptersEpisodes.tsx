@@ -28,13 +28,21 @@ const ChaptersEpisodes = () => {
   const [chapterTitle, setChapterTitle] = useState("");
   const [episodeForm, setEpisodeForm] = useState({ title: "", description: "" });
   const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [editingEpisodeId, setEditingEpisodeId] = useState<string | null>(null);
+  const [editEpisodeForm, setEditEpisodeForm] = useState({ title: "", description: "" });
+  const [editVideoFile, setEditVideoFile] = useState<File | null>(null);
 
   const { data: chaptersRes } = useAdminChapters(courseId);
   const { data: episodesRes } = useAdminEpisodes(chapterId);
 
   useEffect(() => {
     setChapterId("");
+    setEditingEpisodeId(null);
   }, [courseId]);
+
+  useEffect(() => {
+    setEditingEpisodeId(null);
+  }, [chapterId]);
 
   const createChapterMutation = useApiMutation<{ course_id: string; title: string }, { message: string }>({
     onSuccess: () => {
@@ -68,6 +76,17 @@ const ChaptersEpisodes = () => {
   const deleteEpisodeMutation = useApiMutation<undefined, { message: string }>({
     onSuccess: () => {
       toast.success("Episode deleted");
+      queryClient.invalidateQueries({ queryKey: ["admin-episodes", chapterId] });
+      queryClient.invalidateQueries({ queryKey: ["admin-courses"] });
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const updateEpisodeMutation = useApiMutation<FormData, { message: string }>({
+    onSuccess: () => {
+      toast.success("Episode updated");
+      setEditingEpisodeId(null);
+      setEditVideoFile(null);
       queryClient.invalidateQueries({ queryKey: ["admin-episodes", chapterId] });
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] });
     },
@@ -117,6 +136,31 @@ const ChaptersEpisodes = () => {
     deleteEpisodeMutation.mutate({
       endpoint: `${import.meta.env.VITE_API_URL}/delete-episode/${id}`,
       method: "DELETE",
+    });
+  };
+
+  const onStartEditEpisode = (episodeId: string, title: string, description: string) => {
+    setEditingEpisodeId(episodeId);
+    setEditEpisodeForm({ title: title ?? "", description: description ?? "" });
+    setEditVideoFile(null);
+  };
+
+  const onUpdateEpisode = (episodeId: string) => {
+    if (!courseId || !chapterId || !editEpisodeForm.title.trim()) {
+      return toast.error("Course, chapter and episode title are required");
+    }
+
+    const payload = new FormData();
+    payload.append("course_id", courseId);
+    payload.append("chapter_id", chapterId);
+    payload.append("title", editEpisodeForm.title.trim());
+    payload.append("description", editEpisodeForm.description.trim());
+    if (editVideoFile) payload.append("videoUrl", editVideoFile);
+
+    updateEpisodeMutation.mutate({
+      endpoint: `${import.meta.env.VITE_API_URL}/update-episode/${episodeId}`,
+      method: "PUT",
+      body: payload,
     });
   };
 
@@ -235,32 +279,71 @@ const ChaptersEpisodes = () => {
           ) : (
             <div className="space-y-2">
               {(episodesRes?.data ?? []).map((episode) => (
-                <div key={episode._id} className="flex flex-col gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="font-medium">{episode.title}</p>
-                    <p className="text-xs text-muted-foreground">Duration: {episode.duration || 0}s</p>
-                  </div>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button size="sm" variant="destructive">
-                        Delete
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete episode?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90" onClick={() => onDeleteEpisode(episode._id)}>
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                <div key={episode._id} className="rounded-md border p-3">
+                  {editingEpisodeId === episode._id ? (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                        <Input
+                          placeholder="Episode title"
+                          value={editEpisodeForm.title}
+                          onChange={(e) => setEditEpisodeForm((prev) => ({ ...prev, title: e.target.value }))}
+                        />
+                        <Input type="file" accept="video/*" onChange={(e) => setEditVideoFile(e.target.files?.[0] ?? null)} />
+                        <div className="md:col-span-2">
+                          <Textarea
+                            placeholder="Episode description"
+                            value={editEpisodeForm.description}
+                            onChange={(e) => setEditEpisodeForm((prev) => ({ ...prev, description: e.target.value }))}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => onUpdateEpisode(episode._id)} disabled={updateEpisodeMutation.isPending}>
+                          {updateEpisodeMutation.isPending ? "Saving..." : "Save"}
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => setEditingEpisodeId(null)}>
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="font-medium">{episode.title}</p>
+                        <p className="text-xs text-muted-foreground">Duration: {episode.duration || 0}s</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => onStartEditEpisode(episode._id, episode.title, episode.description)}
+                        >
+                          Edit
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button size="sm" variant="destructive">
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete episode?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90" onClick={() => onDeleteEpisode(episode._id)}>
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

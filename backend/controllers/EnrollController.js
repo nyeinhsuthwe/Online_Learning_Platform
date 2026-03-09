@@ -96,16 +96,28 @@ const EnrollController = {
                     message: "Enrollment not found",
                 });
             }
-            if (enroll.paymentStatus === "paid") {
+
+            const normalizedStatus =
+                status === "rejected" || status === "reject"
+                    ? "failed"
+                    : status;
+
+            if (!["paid", "failed"].includes(normalizedStatus)) {
                 return res.status(400).json({
-                    message: "Payment already confirmed",
+                    message: "Invalid status",
                 });
             }
-            enroll.paymentStatus = status;
+
+            if (["paid", "failed"].includes(enroll.paymentStatus)) {
+                return res.status(400).json({
+                    message: "Payment status is already finalized",
+                });
+            }
+            enroll.paymentStatus = normalizedStatus;
             enroll.confirmedAt = new Date();
             await enroll.save()
             return res.status(200).json({
-                message: `Payment ${status} successfully`,
+                message: `Payment ${normalizedStatus} successfully`,
                 enroll,
             });
 

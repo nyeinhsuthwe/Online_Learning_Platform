@@ -6,6 +6,20 @@ import { useApiMutation } from "@/hooks/useMutation";
 import { toast } from "sonner";
 import { useAdminEnrollments } from "@/common/adminApi";
 
+const isRejectedStatus = (status: string) => ["failed", "rejected", "reject"].includes(status);
+
+const normalizeStatus = (status: string) => {
+  if (status === "paid") return "paid";
+  if (isRejectedStatus(status)) return "rejected";
+  return "pending";
+};
+
+const statusClassMap: Record<"pending" | "paid" | "rejected", string> = {
+  pending: "bg-yellow-100 text-yellow-700",
+  paid: "bg-green-100 text-green-700",
+  rejected: "bg-red-100 text-red-700",
+};
+
 const Enrollments = () => {
   const PAGE_SIZE = 8;
   const queryClient = useQueryClient();
@@ -36,9 +50,9 @@ const Enrollments = () => {
   const filteredEnrollments = useMemo(() => {
     if (statusFilter === "all") return enrollments;
     if (statusFilter === "rejected") {
-      return enrollments.filter((enroll) => ["rejected", "reject"].includes(enroll.paymentStatus));
+      return enrollments.filter((enroll) => isRejectedStatus(enroll.paymentStatus));
     }
-    return enrollments.filter((enroll) => enroll.paymentStatus === statusFilter);
+    return enrollments.filter((enroll) => normalizeStatus(enroll.paymentStatus) === statusFilter);
   }, [enrollments, statusFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filteredEnrollments.length / PAGE_SIZE));
@@ -85,6 +99,11 @@ const Enrollments = () => {
             <div className="space-y-2">
               {paginatedEnrollments.map((enroll) => (
                 <div key={enroll._id} className="space-y-2 rounded-md border p-3">
+                  {(() => {
+                    const normalized = normalizeStatus(enroll.paymentStatus);
+                    const isFinalized = normalized === "paid" || normalized === "rejected";
+                    return (
+                      <>
                   <p className="text-sm">
                     <span className="font-medium">Enroll ID:</span> {enroll._id}
                   </p>
@@ -92,16 +111,28 @@ const Enrollments = () => {
                   <p className="text-sm text-muted-foreground">Course: {enroll.course_id}</p>
                   <p className="text-sm text-muted-foreground">Price: {enroll.price}</p>
                   <p className="text-sm text-muted-foreground">Payment Method: {enroll.paymentMethod || "N/A"}</p>
-                  <p className="text-sm text-muted-foreground">Status: {enroll.paymentStatus}</p>
-
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={() => onConfirm(enroll._id, "paid")}>
-                      Mark Paid
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => onConfirm(enroll._id, "rejected")}>
-                      Mark Rejected
-                    </Button>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Status:</span>
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium capitalize ${statusClassMap[normalized]}`}>
+                      {normalized}
+                    </span>
                   </div>
+
+                  {isFinalized ? (
+                    <p className="text-xs text-muted-foreground">This enrollment status is finalized.</p>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Button size="sm" onClick={() => onConfirm(enroll._id, "paid")} disabled={confirmMutation.isPending}>
+                        Mark Paid
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => onConfirm(enroll._id, "failed")} disabled={confirmMutation.isPending}>
+                        Mark Rejected
+                      </Button>
+                    </div>
+                  )}
+                      </>
+                    );
+                  })()}
                 </div>
               ))}
             </div>

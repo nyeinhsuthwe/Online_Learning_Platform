@@ -82,6 +82,39 @@ const EpisodeController = {
         }
     },
 
+    update: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { chapter_id, title, description, course_id } = req.body;
+
+            const episode = await Episode.findById(id);
+            if (!episode) {
+                return res.status(404).json({ message: "Episode not found" });
+            }
+
+            if (chapter_id !== undefined) episode.chapter_id = chapter_id;
+            if (course_id !== undefined) episode.course_id = course_id;
+            if (title !== undefined) episode.title = title;
+            if (description !== undefined) episode.description = description;
+
+            if (req.file) {
+                const videoPath = req.file.path;
+                const duration = await getVideoDuration(videoPath);
+                episode.videoUrl = `/uploads/video/${req.file.filename}`;
+                episode.duration = duration;
+            }
+
+            await episode.save();
+
+            return res.status(200).json({
+                message: "Episode updated successfully",
+                data: episode
+            });
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+
     updateProgress: async (req, res) => {
         try {
             const { userId, courseId, episodeId, progress } = req.body;

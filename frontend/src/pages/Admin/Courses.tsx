@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,11 +18,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useApiMutation } from "@/hooks/useMutation";
 import { toast } from "sonner";
-import { useAdminCategories, useAdminCourses } from "@/common/adminApi";
+import { useAdminCategories, useAdminCourses, type CourseItem } from "@/common/adminApi";
 
 const Courses = () => {
   const PAGE_SIZE = 6;
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { data: coursesRes, isLoading } = useAdminCourses();
   const { data: categoriesRes } = useAdminCategories();
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,6 +38,17 @@ const Courses = () => {
     courseDuration: "",
   });
   const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({
+    title: "",
+    category_id: "",
+    price: "",
+    description: "",
+    topics: "",
+    timePeriod: "",
+    courseDuration: "",
+  });
+  const [editThumbnail, setEditThumbnail] = useState<File | null>(null);
 
   const categoryMap = useMemo(() => {
     return new Map((categoriesRes?.data ?? []).map((category) => [category._id, category.name]));
@@ -62,6 +75,16 @@ const Courses = () => {
   const deleteMutation = useApiMutation<undefined, { message: string }>({
     onSuccess: () => {
       toast.success("Course deleted");
+      queryClient.invalidateQueries({ queryKey: ["admin-courses"] });
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const updateMutation = useApiMutation<FormData, { message: string }>({
+    onSuccess: () => {
+      toast.success("Course updated");
+      setEditingId(null);
+      setEditThumbnail(null);
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] });
     },
     onError: (err) => toast.error(err.message),
@@ -102,6 +125,50 @@ const Courses = () => {
     deleteMutation.mutate({
       endpoint: `${import.meta.env.VITE_API_URL}/delete-course/${courseId}`,
       method: "DELETE",
+    });
+  };
+
+  const onStartEdit = (course: CourseItem) => {
+    setEditingId(course._id);
+    setEditThumbnail(null);
+    setEditForm({
+      title: course.title ?? "",
+      category_id: course.category_id ?? "",
+      price: String(course.price ?? ""),
+      description: course.description ?? "",
+      topics: (course.topics ?? []).join(", "),
+      timePeriod: course.timePeriod ?? "",
+      courseDuration: course.courseDuration ?? "",
+    });
+  };
+
+  const onUpdate = (courseId: string) => {
+    if (!editForm.title.trim() || !editForm.category_id || !editForm.price || !editForm.description.trim()) {
+      return toast.error("Title, category, price and description are required");
+    }
+
+    const payload = new FormData();
+    payload.append("title", editForm.title.trim());
+    payload.append("category_id", editForm.category_id);
+    payload.append("price", editForm.price);
+    payload.append("description", editForm.description.trim());
+    payload.append(
+      "topics",
+      JSON.stringify(
+        editForm.topics
+          .split(",")
+          .map((topic) => topic.trim())
+          .filter(Boolean)
+      )
+    );
+    payload.append("timePeriod", editForm.timePeriod.trim());
+    payload.append("courseDuration", editForm.courseDuration.trim());
+    if (editThumbnail) payload.append("thumbnailUrl", editThumbnail);
+
+    updateMutation.mutate({
+      endpoint: `${import.meta.env.VITE_API_URL}/update-course/${courseId}`,
+      method: "PUT",
+      body: payload,
     });
   };
 
@@ -206,39 +273,131 @@ const Courses = () => {
           ) : (
             <div className="space-y-2">
               {paginatedCourses.map((course) => (
-                <div key={course._id} className="flex flex-col gap-2 rounded-md border p-3 lg:flex-row lg:items-center lg:justify-between">
-                  <div className="space-y-1">
-                    <p className="font-semibold">{course.title}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Category: {categoryMap.get(course.category_id) || course.category_id}
-                    </p>
-                    <p className="text-sm text-muted-foreground">Price: {course.price}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Chapters: {course.chapterCount ?? 0} | Episodes: {course.episodeCount ?? 0} | Enrolls: {course.enrollCount ?? 0}
-                    </p>
-                  </div>
+                <div key={course._id} className="rounded-md border p-3">
+                  {editingId === course._id ? (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                        <Input
+                          placeholder="Course title"
+                          value={editForm.title}
+                          onChange={(e) => setEditForm((prev) => ({ ...prev, title: e.target.value }))}
+                        />
 
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button size="sm" variant="destructive">
-                        Delete
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete course?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This will permanently remove the course.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90" onClick={() => onDelete(course._id)}>
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                        <select
+                          className="h-10 rounded-md border px-3 text-sm"
+                          value={editForm.category_id}
+                          onChange={(e) => setEditForm((prev) => ({ ...prev, category_id: e.target.value }))}
+                        >
+                          <option value="">Select category</option>
+                          {(categoriesRes?.data ?? []).map((category) => (
+                            <option key={category._id} value={category._id}>
+                              {category.name}
+                            </option>
+                          ))}
+                        </select>
+
+                        <Input
+                          placeholder="Price"
+                          type="number"
+                          value={editForm.price}
+                          onChange={(e) => setEditForm((prev) => ({ ...prev, price: e.target.value }))}
+                        />
+
+                        <Input
+                          placeholder="Topics (comma separated)"
+                          value={editForm.topics}
+                          onChange={(e) => setEditForm((prev) => ({ ...prev, topics: e.target.value }))}
+                        />
+
+                        <Input
+                          placeholder="Time period"
+                          value={editForm.timePeriod}
+                          onChange={(e) => setEditForm((prev) => ({ ...prev, timePeriod: e.target.value }))}
+                        />
+
+                        <Input
+                          placeholder="Course duration"
+                          value={editForm.courseDuration}
+                          onChange={(e) => setEditForm((prev) => ({ ...prev, courseDuration: e.target.value }))}
+                        />
+
+                        <div className="md:col-span-2">
+                          <Textarea
+                            placeholder="Course description"
+                            value={editForm.description}
+                            onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))}
+                          />
+                        </div>
+
+                        <div className="md:col-span-2">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setEditThumbnail(e.target.files?.[0] ?? null)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => onUpdate(course._id)} disabled={updateMutation.isPending}>
+                          {updateMutation.isPending ? "Saving..." : "Save"}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setEditingId(null);
+                            setEditThumbnail(null);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                      <div className="space-y-1">
+                        <p className="font-semibold">{course.title}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Category: {categoryMap.get(course.category_id) || course.category_id}
+                        </p>
+                        <p className="text-sm text-muted-foreground">Price: {course.price}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Chapters: {course.chapterCount ?? 0} | Episodes: {course.episodeCount ?? 0} | Enrolls: {course.enrollCount ?? 0}
+                        </p>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={() => navigate(`/admin/courses/${course._id}`)}>
+                          Detail
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => onStartEdit(course)}>
+                          Edit
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button size="sm" variant="destructive">
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete course?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This will permanently remove the course.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90" onClick={() => onDelete(course._id)}>
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

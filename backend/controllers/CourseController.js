@@ -159,6 +159,52 @@ const CourseController = {
         }
     },
 
+    update: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { category_id, title, price, description, topics, timePeriod, courseDuration } = req.body;
+
+            const course = await Course.findById(id);
+            if (!course) {
+                return res.status(404).json({ message: "Course not found" });
+            }
+
+            const nextTopics =
+                typeof topics === "string"
+                    ? (() => {
+                        try {
+                            return JSON.parse(topics);
+                        } catch (_) {
+                            return topics
+                                .split(",")
+                                .map((topic) => topic.trim())
+                                .filter(Boolean);
+                        }
+                    })()
+                    : topics;
+
+            if (category_id !== undefined) course.category_id = category_id;
+            if (title !== undefined) course.title = title;
+            if (price !== undefined) course.price = price;
+            if (description !== undefined) course.description = description;
+            if (nextTopics !== undefined) course.topics = nextTopics;
+            if (timePeriod !== undefined) course.timePeriod = timePeriod;
+            if (courseDuration !== undefined) course.courseDuration = courseDuration;
+            if (req.file) {
+                course.thumbnailUrl = `/uploads/image/${req.file.filename}`;
+            }
+
+            await course.save();
+
+            return res.status(200).json({
+                message: "Course updated successfully",
+                data: course
+            });
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+
     delete: async (req, res) => {
         const { id } = req.params;
         const deleteCourse = await Course.findByIdAndDelete(id);

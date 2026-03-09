@@ -19,6 +19,7 @@ import LayoutForAdmin from '@/layout/Admin';
 import Dashboard from '@/pages/Admin/Dashboard';
 import Categories from '@/pages/Admin/Categories';
 import Courses from '@/pages/Admin/Courses';
+import AdminCourseDetail from '@/pages/Admin/CourseDetail';
 import ChaptersEpisodes from '@/pages/Admin/ChaptersEpisodes';
 import Enrollments from '@/pages/Admin/Enrollments';
 import Users from '@/pages/Admin/Users';
@@ -126,6 +127,10 @@ const route = createBrowserRouter([
       {
         path: "courses",
         element: <Courses />,
+      },
+      {
+        path: "courses/:id",
+        element: <AdminCourseDetail />,
       },
       {
         path: "content",

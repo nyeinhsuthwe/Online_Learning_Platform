@@ -13,6 +13,8 @@ export interface CourseItem {
   category_id: string;
   thumbnailUrl?: string;
   topics?: string[];
+  timePeriod?: string;
+  courseDuration?: string;
   chapterCount?: number;
   episodeCount?: number;
   enrollCount?: number;
@@ -29,10 +31,12 @@ export interface Episode {
   _id: string;
   title: string;
   description: string;
-  chapter_id: {
-    _id: string;
-    title: string;
-  };
+  chapter_id:
+    | string
+    | {
+        _id: string;
+        title: string;
+      };
   course_id: string;
   videoUrl?: string;
   duration?: number;
@@ -100,5 +104,21 @@ export const useAdminEpisodes = (chapterId: string) => {
     queryKey: ["admin-episodes", chapterId],
     endpoint: `${import.meta.env.VITE_API_URL}/get-episode-list?chapterId=${chapterId}`,
     enabled: Boolean(chapterId),
+  });
+};
+
+export const useAdminEpisodesByCourse = (courseId: string) => {
+  return useApiQuery<{ data: Episode[] }>({
+    queryKey: ["admin-episodes-course", courseId],
+    endpoint: `${import.meta.env.VITE_API_URL}/get-episode-by-course?courseId=${courseId}`,
+    enabled: Boolean(courseId),
+  });
+};
+
+export const useAdminCourseById = (courseId: string) => {
+  return useApiQuery<{ data: CourseItem; counts: { chapters: number; episodes: number } }>({
+    queryKey: ["admin-course", courseId],
+    endpoint: `${import.meta.env.VITE_API_URL}/get-courseById/${courseId}`,
+    enabled: Boolean(courseId),
   });
 };

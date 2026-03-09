@@ -9,6 +9,7 @@ const Episode = require('../models/Episode');
 router.post("/create-course", upload.single("thumbnailUrl"), CourseController.createCourse)
 router.get("/get-course",authMiddleware, CourseController.getCourse)
 router.get("/get-courseById/:id", CourseController.getCourseById)
+router.put("/update-course/:id", upload.single("thumbnailUrl"), CourseController.update)
 router.delete("/delete-course/:id", CourseController.delete)
 
 router.post(

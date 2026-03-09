@@ -69,7 +69,9 @@ export interface Course {
   createdAt: string,
   updatedAt: string,
   __v: number,
-  course_id : string
+  course_id: string
+  completedEpisodes: number;
+  progress: number;
 }
 
 export interface ChatParticipant {

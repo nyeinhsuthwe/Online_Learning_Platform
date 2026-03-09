@@ -1,7 +1,7 @@
 import { useCourse } from "@/common/api"
 import { FeaturedCourseCard } from "./FeaturedCourseCard"
 import { useNavigate } from "react-router-dom"
-import type { Course } from "@/types/type"
+import type { Course  } from "@/types/type"
 
 export function FeaturedCourses() {
     const { data: courses, isLoading } = useCourse()

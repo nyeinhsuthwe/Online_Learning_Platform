@@ -10,24 +10,27 @@ export function AboutCourse() {
     const hasChapters = chaptersResponse?.data?.length > 0;
 
     return (
-        <div className="space-y-4 px-2 sm:px-4 md:px-6 lg:px-0">
+        <section className="overflow-hidden rounded-3xl border border-border/60 bg-card/80 shadow-sm backdrop-blur">
 
             {hasChapters && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 items-center">
-                    <span className="text-lg sm:text-xl md:text-2xl font-bold text-text-yellow">
-                        Course Outline
-                    </span>
+                <div className="flex flex-col gap-4 border-b border-border/60 bg-background/60 px-5 py-5 sm:flex-row sm:items-end sm:justify-between md:px-6">
+                    <div className="space-y-1">
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">Course Workspace</p>
+                        <h2 className="text-2xl font-semibold tracking-tight text-foreground">Course Outline</h2>
+                    </div>
                     <Input
                         type="text"
-                        className="h-12 w-full"
+                        className="h-12 w-full rounded-2xl border-border/60 bg-background sm:max-w-sm"
                         placeholder="Search for lessons"
                     />
                 </div>
             )}
 
             {!isLoading && hasChapters && (
-                <Accordian chapters={chaptersResponse.data} />
+                <div className="p-4 md:p-5">
+                    <Accordian chapters={chaptersResponse.data} />
+                </div>
             )}
-        </div>
+        </section>
     );
 }

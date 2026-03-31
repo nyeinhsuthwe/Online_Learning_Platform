@@ -3,7 +3,7 @@ import {
 } from "@/components/ui/accordion"
 import { useParams } from "react-router-dom"
 import { ChapterItem } from "../Lesson/ChapterItems"
-import { useEnrollByUser } from "@/common/api"
+import { useEnrollList } from "@/common/api"
 import { useUserStore } from "@/store/user"
 
 interface Chapter {
@@ -17,7 +17,7 @@ interface AccordianProps {
 }
 
 export function Accordian({ chapters }: AccordianProps) {
-  const { data, isLoading } = useEnrollByUser();
+  const { data, isLoading } = useEnrollList();
   const { user } = useUserStore();
   const { id: courseId } = useParams<{ id: string }>();
 
@@ -25,13 +25,21 @@ export function Accordian({ chapters }: AccordianProps) {
 
   const enrollments = data?.data || [];
 
-  const enroll = enrollments.find(
-    (e: any) =>
-      e.user_id === user?._id &&
-      e.course_id?._id === courseId
-  );
+  const normalizeStatus = (status?: string) => {
+    if (!status) return "pending";
+    const lower = status.toLowerCase();
+    if (lower === "paid" || lower === "success" || lower === "completed") return "paid";
+    if (["failed", "rejected", "reject"].includes(lower)) return "rejected";
+    return "pending";
+  };
 
-  const hasPaidAccess = enroll?.paymentStatus === "paid";
+  const enroll = enrollments.find((e: any) => {
+    const enrollUserId = typeof e.user_id === "string" ? e.user_id : e.user_id?._id;
+    const enrollCourseId = typeof e.course_id === "string" ? e.course_id : e.course_id?._id;
+    return enrollUserId === user?._id && enrollCourseId === courseId;
+  });
+
+  const hasPaidAccess = normalizeStatus(enroll?.paymentStatus) === "paid";
 
 
 
@@ -48,5 +56,4 @@ export function Accordian({ chapters }: AccordianProps) {
     </Accordion>
   );
 }
-
 

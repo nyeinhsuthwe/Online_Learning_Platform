@@ -1,6 +1,4 @@
 import { useParams } from "react-router-dom";
-import { Card } from "@/components/ui/card";
-import { CourseReviews } from "../Review/CarouselReview";
 import { useCourse } from "@/common/api";
 import { SimpleVdSkeleton } from "../skeletons/SimpleVdSkeleton";
 
@@ -8,7 +6,7 @@ import { SimpleVdSkeleton } from "../skeletons/SimpleVdSkeleton";
 export function SimpleVd() {
   const { id: courseId } = useParams<{ id: string }>();
   const { isLoading } = useCourse();
-  
+
   if (!courseId) {
     return null;
   }
@@ -17,22 +15,25 @@ export function SimpleVd() {
   }
 
   return (
-    <div>
-      <Card className="rounded-md overflow-hidden gap-3 py-0 text-white font-semibold text-[14px]">
-        <span className="block bg-primary-dark px-3 py-2 rounded-t-md">
-          Simple Lesson Video
-        </span>
+    <div className="space-y-4 p-5 md:p-6">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">Preview Lesson</p>
+        <h2 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">Watch before you enroll</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Get a quick feel for the teaching style and lesson pacing.
+        </p>
+      </div>
 
-        <div className="p-3 pt-0">
-          <video
-            src="/simplevd.mp4"
-            controls
-            className="w-full rounded-md"
-          />
-        </div>
-      </Card>
-
-      <CourseReviews courseId={courseId} />
+      <div className="overflow-hidden rounded-2xl border border-border/60 p-2 shadow-sm">
+        <video
+          src="/simplevd.mp4"
+          autoPlay
+          muted
+          playsInline
+          controls
+          className="aspect-video w-full rounded-xl bg-black object-cover"
+        />
+      </div>
     </div>
   );
 }

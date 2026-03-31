@@ -27,7 +27,7 @@ const httpServer = http.createServer(app);
 const MONGO_URL = process.env.MONGO_URL;
 
 if (!MONGO_URL) {
-  throw new Error("MONGO_URI is missing");
+    throw new Error("MONGO_URI is missing");
 }
 
 mongoose.connect(MONGO_URL).then(() => {
@@ -59,7 +59,6 @@ async function seedDefaultAdmin() {
             role: "admin",
         });
 
-        console.log(`Default admin created: ${adminEmail}`);
         return;
     }
 
@@ -70,12 +69,19 @@ async function seedDefaultAdmin() {
     }
 }
 
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://192.168.100.191:5173",
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-    origin: ["http://localhost:5173", "http://192.168.100.163:5173"],
+    origin: allowedOrigins,
     methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
 }))
+
 app.use(morgan(`dev`))
 app.use(express.json())
 app.use(cookieParser());
@@ -83,8 +89,8 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "uploads"))
+    "/uploads",
+    express.static(path.join(__dirname, "uploads"))
 );
 
 app.use("/api", CategoryRoute)
@@ -104,17 +110,17 @@ app.use(express.static(frontendPath));
 
 
 app.use((req, res, next) => {
-  if (!req.path.startsWith("/api")) {
-    res.sendFile(path.join(frontendPath, "index.html"));
-  } else {
-    next();
-  }
+    if (!req.path.startsWith("/api")) {
+        res.sendFile(path.join(frontendPath, "index.html"));
+    } else {
+        next();
+    }
 });
 
 
 const io = new Server(httpServer, {
     cors: {
-        origin: ["http://localhost:5173", "http://192.168.100.163:5173"],
+        origin: allowedOrigins,
         methods: ["GET", "POST"],
         credentials: true,
     },

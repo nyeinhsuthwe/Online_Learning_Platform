@@ -23,19 +23,18 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section className="mx-auto max-w-7xl px-6 space-y-12">
-      <h2 className="text-2xl font-semibold text-center tracking-tight">
-        How It Works
-      </h2>
+    <section className="mx-auto max-w-7xl space-y-12 px-2 sm:px-6">
+      <div className="space-y-2 text-center">
+        <h2 className="section-title">How It Works</h2>
+        <p className="section-subtitle">A simple path from curiosity to mastery.</p>
+      </div>
 
-      <div className="grid sm:grid-cols-3 gap-8">
+      <div className="grid gap-6 sm:grid-cols-3">
         {steps.map((step, index) => (
           <div
             key={step.title}
             className={`
-              rounded-2xl border p-6 text-center
-              transition-all duration-300
-              hover:-translate-y-1 hover:shadow-md
+              glass-card hover-lift text-center p-5
               ${step.cardBg} ${step.border}
             `}
           >
@@ -43,7 +42,7 @@ export function HowItWorks() {
             <div
               className={`
                 mx-auto mb-4 flex h-12 w-12 items-center justify-center
-                rounded-full bg-background font-bold text-lg
+                rounded-2xl bg-background font-bold text-lg
                 ${step.accent}
               `}
             >
@@ -60,5 +59,4 @@ export function HowItWorks() {
     </section>
   )
 }
-
 

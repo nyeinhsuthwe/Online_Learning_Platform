@@ -55,9 +55,10 @@ const ResetPassword = () => {
     }
 
     return (
-        <Card className="w-full max-w-md mx-auto">
+        <Card className="glass-card w-full max-w-md mx-auto border-0 shadow-lg">
             <CardHeader>
                 <CardTitle>Reset Password</CardTitle>
+                <p className="text-sm text-muted-foreground">Choose a new password to secure your account.</p>
             </CardHeader>
 
             <CardContent>
@@ -74,6 +75,7 @@ const ResetPassword = () => {
                                     id="password"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Enter new password"
+                                    className="h-12 rounded-xl bg-background/70"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
@@ -81,7 +83,7 @@ const ResetPassword = () => {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-2.5 text-gray-500"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                                 >
                                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                 </button>
@@ -96,6 +98,7 @@ const ResetPassword = () => {
                                     id="confirmPassword"
                                     type={showConfirm ? "text" : "password"}
                                     placeholder="Confirm new password"
+                                    className="h-12 rounded-xl bg-background/70"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
@@ -103,7 +106,7 @@ const ResetPassword = () => {
                                 <button
                                     type="button"
                                     onClick={() => setShowConfirm(!showConfirm)}
-                                    className="absolute right-3 top-2.5 text-gray-500"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                                 >
                                     {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
                                 </button>
@@ -116,14 +119,14 @@ const ResetPassword = () => {
                                 <Button
                                     type="submit"
                                     disabled={loading}
-                                    className="bg-primary-dark text-white hover:bg-primary-hover w-full"
+                                    className="h-11 w-full rounded-xl bg-gradient-to-r from-sky-600 to-emerald-500 text-white shadow-sm hover:shadow-md"
                                 >
                                     {loading ? "Resetting..." : "Reset Password"}
                                 </Button>
 
                                 <FieldDescription className="px-6 text-center mt-2">
                                     Back to{" "}
-                                    <NavLink to="/login" className="text-blue-500 hover:text-blue-600">
+                                    <NavLink to="/login" className="text-primary hover:text-primary/80">
                                         Login
                                     </NavLink>
                                 </FieldDescription>

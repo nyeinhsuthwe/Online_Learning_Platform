@@ -15,6 +15,7 @@ import { useApiQuery } from "@/hooks/useQuery";
 import { getSocketClient } from "@/lib/socket";
 import type { ChatMessage, ChatThread } from "@/types/type";
 import { useUserStore } from "@/store/user";
+import { useChatNotifications } from "@/store/chatNotifications";
 
 interface SupportChatDrawerProps {
   open: boolean;
@@ -50,6 +51,7 @@ function appendUniqueMessage(messages: ChatMessage[], message: ChatMessage) {
 export function SupportChatDrawer({ open, onOpenChange }: SupportChatDrawerProps) {
   const { courseId, episodeId } = useParams<{ courseId: string; episodeId: string }>();
   const { user } = useUserStore();
+  const { setChatOpen, clear } = useChatNotifications();
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isSending, setIsSending] = useState(false);
@@ -84,9 +86,17 @@ export function SupportChatDrawer({ open, onOpenChange }: SupportChatDrawerProps
 
   useEffect(() => {
     if (messageResponse?.data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMessages(messageResponse.data);
     }
   }, [messageResponse]);
+
+  useEffect(() => {
+    setChatOpen(open);
+    if (open) {
+      clear();
+    }
+  }, [open, setChatOpen, clear]);
 
   useEffect(() => {
     if (!open || !threadId) {
@@ -158,14 +168,14 @@ export function SupportChatDrawer({ open, onOpenChange }: SupportChatDrawerProps
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg" side="right">
+      <SheetContent className="w-full sm:max-w-lg h-svh max-h-svh z-70" side="right">
         <SheetHeader className="border-b">
           <SheetTitle>Support Chat</SheetTitle>
           <SheetDescription>Ask admin/teacher about this lesson.</SheetDescription>
         </SheetHeader>
 
-        <div className="flex h-full flex-col px-4 pb-4">
-          <div className="my-3 flex-1 space-y-3 overflow-y-auto rounded-md border bg-muted/20 p-3">
+        <div className="flex h-full min-h-0 space-y-3 overflow-y-auto rounded-md flex-col px-4 pb-4">
+          <div className="my-3 flex-1 min-h-0 space-y-3 overflow-y-auto rounded-md  p-3">
             {loading && <p className="text-sm text-muted-foreground">Loading messages...</p>}
 
             {!loading && messages.length === 0 && (
@@ -173,7 +183,9 @@ export function SupportChatDrawer({ open, onOpenChange }: SupportChatDrawerProps
             )}
 
             {messages.map((message) => {
-              const isMine = message.sender_id._id === user?._id;
+              const sender = message.sender_id as ChatMessage["sender_id"] | string | undefined;
+              const senderId = typeof sender === "string" ? sender : sender?._id;
+              const isMine = Boolean(senderId && user?._id && senderId === user._id);
 
               return (
                 <div key={message._id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>

@@ -45,14 +45,14 @@ export function CommentSession() {
 
     return (
         <div>
-            <Card className="text-center gap-2 bg-linear-to-br from-blue-300 to-blue-200 dark:from-slate-900 dark:to-slate-800 p-4 sm:p-6 md:p-8">
+            <Card className="glass-card text-center gap-2 p-4 sm:p-6 md:p-8">
                 {/* Title */}
                 <div className="space-y-1 flex flex-col">
-                    <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-text-primary dark:text-white">
+                    <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-foreground">
                         Answer & Questions
                     </span>
 
-                    <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                    <span className="text-sm sm:text-base text-muted-foreground">
                         If you have a question, you can ask here!
                     </span>
                 </div>
@@ -70,19 +70,19 @@ export function CommentSession() {
                             onChange={(e) => setComment(e.target.value)}
                             placeholder="Type your message here."
                             id="message-2"
-                            className="w-full h-32 sm:h-40 bg-white text-text-primary dark:text-white resize-none"
+                            className="h-32 w-full resize-none rounded-xl bg-background/70 text-foreground sm:h-40"
                         />
 
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 gap-2 sm:gap-0">
                             <p className="text-muted-foreground text-sm flex items-center gap-2">
                                 <Checkbox
                                     defaultChecked
-                                    className="w-4 h-4 data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+                                    className="w-4 h-4 data-[state=checked]:border-sky-600 data-[state=checked]:bg-sky-600 data-[state=checked]:text-white"
                                 />
                                 Subscribe to get reply email notifications
                             </p>
 
-                            <Button onClick={() => onSubmit()} className="w-full sm:w-40 h-10 sm:h-12 text-[14px] sm:text-[16px] bg-primary-dark rounded-lg text-white hover:bg-primary-hover">
+                            <Button onClick={() => onSubmit()} className="w-full sm:w-40 h-10 sm:h-12 text-[14px] sm:text-[16px] rounded-xl bg-gradient-to-r from-sky-600 to-emerald-500 text-white shadow-sm hover:shadow-md">
                                 Comment
                             </Button>
                         </div>

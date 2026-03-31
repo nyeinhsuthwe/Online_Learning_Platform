@@ -70,7 +70,7 @@ export function LessonDetailVd() {
     return (
         <div className="space-y-4">
             {/* Video */}
-            <Card className="rounded-md overflow-hidden p-2">
+            <Card className="glass-card overflow-hidden p-2">
                 <div className="relative w-full">
                     <video
                         ref={videoRef}
@@ -88,9 +88,9 @@ export function LessonDetailVd() {
             </Card>
 
             {/* Action Buttons */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <ReviewDialog courseId={courseId} />
-                <Button className="bg-text-yellow h-11 sm:h-12 text-[14px] sm:text-[16px] hover:bg-yellow-500 text-white flex gap-2">
+                <Button className="h-11 sm:h-12 rounded-xl bg-amber-500 text-[14px] text-white shadow-sm hover:bg-amber-600 hover:shadow-md sm:text-[16px] flex gap-2">
                     <Download className="w-5 h-5" />
                     Download Session
                 </Button>

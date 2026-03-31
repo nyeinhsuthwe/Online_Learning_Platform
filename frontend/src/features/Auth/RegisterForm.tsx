@@ -71,9 +71,10 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
 
     return (
-        <Card {...props}>
+        <Card {...props} className="glass-card border-0 shadow-lg">
             <CardHeader>
                 <CardTitle>Create an account</CardTitle>
+                <p className="text-sm text-muted-foreground">Start learning in minutes.</p>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -81,6 +82,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                         <Field>
                             <FieldLabel htmlFor="name">Full Name</FieldLabel>
                             <Input id="name" type="text" placeholder="John Doe"
+                                className="h-12 rounded-xl bg-background/70"
                                 {...register("name")}
                             />
                             {errors.name && (
@@ -93,6 +95,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                         <Field>
                             <FieldLabel htmlFor="email">Email</FieldLabel>
                             <Input id="email" type="email" placeholder="m@example.com"
+                                className="h-12 rounded-xl bg-background/70"
                                 {...register("email")}
                             />
                             {errors.email && (
@@ -105,6 +108,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                         <Field>
                             <FieldLabel htmlFor="phone">Phone</FieldLabel>
                             <Input id="phone" type="phone" placeholder="Eg, 09xxxxxxxxx"
+                                className="h-12 rounded-xl bg-background/70"
                                 {...register("phone")}
                             />
                             {errors.phone && (
@@ -121,12 +125,13 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                                     id="password"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Enter your password"
+                                    className="h-12 rounded-xl bg-background/70"
                                     {...register("password")}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute  top-2.5 right-2 text-gray-500"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                                 >
                                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                 </button>
@@ -144,12 +149,13 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                                     id="confirmPassword"
                                     type={openPassword ? "text" : "password"}
                                     placeholder="Enter your password"
+                                    className="h-12 rounded-xl bg-background/70"
                                     {...register("confirmPassword")}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setOpenPassword(!openPassword)}
-                                    className="absolute  top-2.5 right-2 text-gray-500"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                                 >
                                     {openPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                 </button>
@@ -162,12 +168,12 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                         </Field>
                         <FieldGroup>
                             <Field>
-                                <Button type="submit" className="bg-primary-dark text-white hover:bg-primary-hover" disabled={registerMutation.isPending}>
+                                <Button type="submit" className="h-11 rounded-xl bg-gradient-to-r from-sky-600 to-emerald-500 text-white shadow-sm hover:shadow-md" disabled={registerMutation.isPending}>
                                     {registerMutation.isPending ? "Creating..." : "Create Account"}
                                 </Button>
 
                                 <FieldDescription className="px-6 text-center">
-                                    Already have an account? <NavLink to="/login" className="text-blue-500 hover:text-blue-600">Sign in</NavLink>
+                                    Already have an account? <NavLink to="/login" className="text-primary hover:text-primary/80">Sign in</NavLink>
                                 </FieldDescription>
                             </Field>
                         </FieldGroup>
@@ -177,4 +183,3 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
         </Card>
     );
 }
-

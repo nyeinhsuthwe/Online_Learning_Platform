@@ -8,16 +8,20 @@ import {
 } from "@/components/ui/tooltip"
 
 export const ReviewCard = ({ review }: { review: Review }) => {
+  const userName = review.user?.name?.trim() || "Anonymous"
+  const userInitial = userName[0] || "?"
+  const avatarSrc = review.user?.avatar
+
   return (
-    <Card className="p-5 h-full flex flex-col gap-3  dark:bg-transparent">
+    <Card className="flex h-full flex-col gap-3 p-5 dark:bg-transparent">
       <div className="flex items-center gap-3">
         <Avatar>
-          <AvatarImage src={review.user.avatar} />
-          <AvatarFallback className="dark:bg-muted bg-green-200">{review.user.name[0]}</AvatarFallback>
+          <AvatarImage src={avatarSrc} />
+          <AvatarFallback className="dark:bg-muted  bg-green-200">{userInitial}</AvatarFallback>
         </Avatar>
 
         <div>
-          <p className="font-semibold ">{review.user.name}</p>
+          <p className="font-semibold text-sm">{userName}</p>
         </div>
       </div>
 

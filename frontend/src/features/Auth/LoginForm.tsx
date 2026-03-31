@@ -74,9 +74,10 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
 
     return (
-        <Card {...props}>
+        <Card {...props} className="glass-card border-0 shadow-lg">
             <CardHeader>
-                <CardTitle>Login Form</CardTitle>
+                <CardTitle>Welcome Back</CardTitle>
+                <p className="text-sm text-muted-foreground">Sign in to continue learning.</p>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -88,6 +89,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                                 id="email"
                                 type="email"
                                 placeholder="m@example.com"
+                                className="h-12 rounded-xl bg-background/70"
                                 {...register("email")}
                             />
                             {errors.email && (
@@ -105,12 +107,13 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                                     id="password"
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Enter your password"
+                                    className="h-12 rounded-xl bg-background/70"
                                     {...register("password")}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute  top-2.5 right-2 text-gray-500"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                                 >
                                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                 </button>
@@ -135,14 +138,14 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                             <Field>
                                 <Button
                                     type="submit"
-                                    className="bg-primary-dark text-white hover:bg-primary-hover"
+                                    className="h-11 rounded-xl bg-gradient-to-r from-sky-600 to-emerald-500 text-white shadow-sm hover:shadow-md"
                                     disabled={loginMutation.isPending}
                                 >
                                     {loginMutation.isPending ? "Login..." : "Login"}
                                 </Button>
                                 <FieldDescription className="px-6 text-center mt-2">
                                     If you don't have an account?{" "}
-                                    <NavLink to="/register" className="text-blue-500 hover:text-blue-600">
+                                    <NavLink to="/register" className="text-primary hover:text-primary/80">
                                         Register
                                     </NavLink>
                                 </FieldDescription>

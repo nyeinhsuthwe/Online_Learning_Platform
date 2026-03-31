@@ -116,12 +116,12 @@ export function LessonAccordion() {
 
     return (
         <div className="space-y-5">
-            <Card className="p-6 rounded-xl transition bg-linear-to-br from-blue-500 to-blue-200 dark:from-slate-900 dark:to-slate-800 shadow-sm hover:shadow-md">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 dark:text-blue-400">
+            <Card className="glass-card p-6">
+                <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">
                     {course?.data?.data?.title}
                 </h1>
 
-                <p className="mt-2 text-sm font-medium text-blue-100 dark:text-slate-300">
+                <p className="mt-2 text-sm font-medium text-muted-foreground">
                     Publish Date –{" "}
                     {course?.data?.data?.createdAt &&
                         new Date(course.data.data.createdAt).toLocaleDateString("en-GB", {
@@ -141,11 +141,11 @@ export function LessonAccordion() {
             >
                 {Object.entries(grouped).map(([chapterId, chapter]) => (
                     <AccordionItem key={chapterId} value={chapterId}>
-                        <AccordionTrigger className="text-[16px] text-gray-600 dark:text-white">
+                        <AccordionTrigger className="text-[16px] text-foreground">
                             <div className="flex items-center gap-3">
                                 <span>{chapter.title}</span>
                                 <div className="h-5 w-0.5 bg-gray-400" />
-                                <span>
+                                <span className="text-muted-foreground">
                                     {chapter.episodes[0]?.description ?? "No description"}
                                 </span>
                             </div>
@@ -155,7 +155,7 @@ export function LessonAccordion() {
                             {chapter.episodes.map((ep, index) => (
                                 <Card
                                     key={ep._id}
-                                    className="gap-3 p-3 cursor-pointer shadow-sky-200"
+                                    className="glass-card hover-lift cursor-pointer gap-3 p-3"
                                     onClick={() => handleClick(ep._id)}
                                 >
                                     <div className="flex justify-between items-center w-full">
@@ -165,7 +165,7 @@ export function LessonAccordion() {
                                                 isPlaying={episodeId === ep._id}
                                                 progress={progressMap[ep._id] || 0}
                                             />
-                                            <span className="text-[16px] font-semibold dark:text-white">
+                                            <span className="text-[16px] font-semibold text-foreground">
                                                 {ep.title}
                                             </span>
                                         </div>

@@ -74,7 +74,7 @@ const Users = () => {
         <p className="text-sm text-muted-foreground">Manage registered users.</p>
       </div>
 
-      <Card>
+      <Card className="glass-card">
         <CardHeader>
           <CardTitle>User List</CardTitle>
         </CardHeader>
@@ -84,16 +84,16 @@ const Users = () => {
           ) : (
             <div className="space-y-2">
               {paginatedUsers.map((user) => (
-                <div key={user._id} className="flex flex-col gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between">
+                <div key={user._id} className="flex flex-col gap-2 rounded-xl border border-border/60 bg-background/70 p-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="font-medium">{user.name}</p>
+                    <p className="font-medium text-foreground">{user.name}</p>
                     <p className="text-sm text-muted-foreground">{user.email}</p>
                     <p className="text-sm text-muted-foreground">Role: {user.role}</p>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <select
-                      className="h-8 rounded-md border px-2 text-xs"
+                      className="h-9 rounded-xl border border-border/60 bg-background/70 px-3 text-xs"
                       value={user.role}
                       disabled={currentUser?._id === user._id || roleMutation.isPending}
                       onChange={(e) => onRoleChange(user._id, e.target.value as "user" | "admin")}

@@ -59,7 +59,7 @@ export function PaymentMethod() {
 
     return (
         <div className="space-y-4 mt-6">
-            <span className="text-[20px] font-bold">Choose Payment Method</span>
+            <span className="text-[20px] font-bold text-foreground">Choose Payment Method</span>
 
             <div className="grid mt-6 grid-cols-2 gap-4">
                 {paymentOptions.map((option) => (
@@ -68,21 +68,21 @@ export function PaymentMethod() {
                         onClick={() =>
                             setSelectedMethod((prev) => (prev === option.id ? null : option.id))
                         }
-                        className={`flex flex-row items-center gap-4 p-4 cursor-pointer border transition hover:border-blue-400 hover:shadow-md ${selectedMethod === option.id
-                            ? "border-blue-500 shadow-md dark:bg-background"
-                            : "border-gray-200 dark:border-gray-600 bg-white dark:bg-background"
+                        className={`flex flex-row items-center gap-4 p-4 cursor-pointer border transition hover:shadow-md ${selectedMethod === option.id
+                            ? "border-sky-500 bg-background/80 shadow-md"
+                            : "border-border/60 bg-background/60"
                             }`}
 
                     >
                         <img src={option.img} alt={option.label} className="w-10 h-10 rounded object-contain" />
-                        <span className="text-[16px] font-medium">{option.label}</span>
+                        <span className="text-[16px] font-medium text-foreground">{option.label}</span>
                     </Card>
                 ))}
             </div>
 
             <Button
                 onClick={onSubmit}
-                className="mt-5 w-full h-13 text-md font-bold bg-blue-500 text-white hover:bg-blue-600"
+                className="mt-5 w-full h-12 rounded-xl text-md font-bold bg-gradient-to-r from-sky-600 to-emerald-500 text-white shadow-sm hover:shadow-md"
             >
                 Confirm Payment
             </Button>

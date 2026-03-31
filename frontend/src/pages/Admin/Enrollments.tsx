@@ -76,12 +76,12 @@ const Enrollments = () => {
         <p className="text-sm text-muted-foreground">Review enrollments and confirm payment status.</p>
       </div>
 
-      <Card>
+      <Card className="glass-card">
         <CardHeader>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>Enrollment List</CardTitle>
             <select
-              className="h-9 rounded-md border bg-background px-3 text-sm"
+              className="h-9 rounded-xl border border-border/60 bg-background/70 px-3 text-sm"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as "all" | "paid" | "pending" | "rejected")}
             >
@@ -98,7 +98,7 @@ const Enrollments = () => {
           ) : (
             <div className="space-y-2">
               {paginatedEnrollments.map((enroll) => (
-                <div key={enroll._id} className="space-y-2 rounded-md border p-3">
+                <div key={enroll._id} className="space-y-2 rounded-xl border border-border/60 bg-background/70 p-4">
                   {(() => {
                     const normalized = normalizeStatus(enroll.paymentStatus);
                     const isFinalized = normalized === "paid" || normalized === "rejected";

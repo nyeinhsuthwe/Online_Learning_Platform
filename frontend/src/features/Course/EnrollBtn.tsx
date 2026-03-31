@@ -19,18 +19,18 @@ export function EnrollBtn({ course }: { course: Card }) {
     const { text: buttonText, colorClass } = (() => {
         switch (enrollRecord?.paymentStatus) {
             case "paid":
-                return { text: "Enrolled", colorClass: "bg-green-600  hover:bg-green-500" };
+                return { text: "Enrolled", colorClass: "bg-emerald-500 hover:bg-emerald-600" };
             case "pending":
-                return { text: "Pending", colorClass: "bg-yellow-500 hover:bg-yellow-600" };
+                return { text: "Pending", colorClass: "bg-amber-500 hover:bg-amber-600" };
             default:
-                return { text: "Enroll Now", colorClass: "bg-blue-600 hover:bg-blue-500" };
+                return { text: "Enroll Now", colorClass: "bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400" };
         }
     })();
 
     return (
         <div className="w-full">
             <Button type='submit'
-                className={`bg-blue-600 text-white sm:h-12 text-[14px] sm:text-[16px] hover:bg-blue-500 h-12 w-full cursor-pointer ${colorClass}`}
+                className={`h-12 w-full cursor-pointer rounded-2xl text-[14px] text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:text-[16px] ${colorClass}`}
                 onClick={(e) => {
                     e.stopPropagation();
                     if (buttonText === "Enroll Now") {

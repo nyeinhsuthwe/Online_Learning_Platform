@@ -48,11 +48,11 @@ export function ChangePassword() {
             <div className="flex flex-col gap-2">
                 <Label className="text-md">Current Password</Label>
                 <div className="relative">
-                    <Input type={showPassword ? "text" : "password"} className="h-12" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Enter current password" />
+                    <Input type={showPassword ? "text" : "password"} className="h-12 rounded-xl bg-background/70" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Enter current password" />
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     >
                         {!showPassword ? <EyeOff /> : <Eye />}
                     </button>
@@ -61,11 +61,11 @@ export function ChangePassword() {
             <div className="flex flex-col gap-2">
                 <Label className="text-md">New Password</Label>
                 <div className="relative">
-                    <Input type={showNewPassword ? "text" : "password"} className="h-12" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Enter new password" />
+                    <Input type={showNewPassword ? "text" : "password"} className="h-12 rounded-xl bg-background/70" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Enter new password" />
                     <button
                         type="button"
                         onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     >
                         {!showNewPassword ? <EyeOff /> : <Eye />}
                     </button>
@@ -74,11 +74,11 @@ export function ChangePassword() {
             <div className="flex flex-col gap-2">
                 <Label className="text-md">Confirm New Password</Label>
                 <div className="relative">
-                    <Input type={showConfirmPassword ? "text" : "password"} className="h-12" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Enter confirm password" />
+                    <Input type={showConfirmPassword ? "text" : "password"} className="h-12 rounded-xl bg-background/70" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Enter confirm password" />
                     <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     >
                         {!showConfirmPassword ? <EyeOff /> : <Eye />}
                     </button>
@@ -86,10 +86,10 @@ export function ChangePassword() {
             </div>
 
             <div className="flex justify-between">
-                <div className="text-[14px] text-blue-500 hover:text-blue-600">
+                <div className="text-[14px] text-primary hover:text-primary/80">
                     <NavLink to="/forgot-password" className="hover:underline">Forgot password?</NavLink>
                 </div>
-                <Button onClick={() => handleChanged()} disabled={updateMutation.isPending} className="w-60 h-12 text-[15px]  bg-green-500 hover:bg-green-600 text-white flex  my-auto">  {updateMutation.isPending ? "Saving..." : "Save Changes"}</Button>
+                <Button onClick={() => handleChanged()} disabled={updateMutation.isPending} className="w-60 h-12 rounded-xl bg-emerald-500 text-[15px] text-white shadow-sm hover:bg-emerald-600 hover:shadow-md">  {updateMutation.isPending ? "Saving..." : "Save Changes"}</Button>
             </div>
         </div>
     );

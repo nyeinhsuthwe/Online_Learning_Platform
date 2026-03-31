@@ -32,10 +32,10 @@ export function ChapterItem({ chapter, courseId, locked }: ChapterItemProps) {
 
     return (
         <AccordionItem value={chapter._id}>
-            <AccordionTrigger className="text-[18px] text-gray-600 dark:text-white">
+            <AccordionTrigger className="text-[18px] text-foreground">
                 <div className="flex justify-between items-center w-full">
                     <span>{chapter.title}</span>
-                    <span className="text-[15px]">{episodes.length} lessons</span>
+                    <span className="text-[15px] text-muted-foreground">{episodes.length} lessons</span>
                 </div>
             </AccordionTrigger>
 
@@ -43,9 +43,9 @@ export function ChapterItem({ chapter, courseId, locked }: ChapterItemProps) {
                 {episodes.map((ep: Episode, index: number) => (
                     <Card
                         key={ep._id}
-                        className={`p-3 transition ${locked
+                        className={`glass-card p-3 transition ${locked
                                 ? "cursor-not-allowed opacity-60"
-                                : "cursor-pointer hover:shadow-md"
+                                : "cursor-pointer hover-lift"
                             }`}
                         onClick={() => {
                             if (locked) return;
@@ -56,14 +56,14 @@ export function ChapterItem({ chapter, courseId, locked }: ChapterItemProps) {
                     >
                         <div className="flex justify-between items-center w-full">
                             <div className="flex gap-3 items-center">
-                                <span className="w-9 h-9 bg-sky-500 text-white font-bold flex items-center justify-center rounded">
+                                <span className="w-9 h-9 rounded-xl bg-gradient-to-r from-sky-600 to-emerald-500 text-white font-bold flex items-center justify-center">
                                     {index + 1}
                                 </span>
-                                <span className="font-semibold text-gray-600 dark:text-white hover:text-sky-600">{ep.title}</span>
+                                <span className="font-semibold text-foreground hover:text-primary">{ep.title}</span>
                             </div>
 
                             <span
-                                className={`w-11 h-9 flex items-center justify-center rounded ${locked ? "bg-gray-400" : "bg-primary-dark"
+                                className={`w-11 h-9 flex items-center justify-center rounded-xl ${locked ? "bg-gray-400" : "bg-primary-dark"
                                     }`}
                             >
                                 {locked ? <Lock size={18} /> : <Play size={18} />}

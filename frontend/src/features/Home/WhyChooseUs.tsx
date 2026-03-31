@@ -30,23 +30,21 @@ const features = [
 
 export function WhyChooseUs() {
   return (
-    <section className="bg-muted/40 dark:bg-transparent rounded-md">
-      <div className="mx-auto max-w-7xl px-6 py-10 space-y-12">
-        <h2 className="text-2xl font-semibold text-center tracking-tight">
-          Why Learn With Us?
-        </h2>
+    <section className="rounded-3xl border border-border/60 bg-card/60 backdrop-blur">
+      <div className="mx-auto max-w-7xl space-y-12 px-6 py-14">
+        <div className="space-y-2 text-center">
+          <h2 className="section-title">Why Learn With Us?</h2>
+          <p className="section-subtitle">Built for outcomes, not just content.</p>
+        </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid gap-6 sm:grid-cols-2  lg:grid-cols-4">
           {features.map(({ icon: Icon, title, color, bg }) => (
             <div
               key={title}
-              className="
-                rounded-2xl border bg-card p-6 text-center
-                transition hover:-translate-y-1 hover:shadow-md
-              "
+              className="glass-card p-5 hover-lift animate-fade-up text-center"
             >
               <div
-                className={`mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full ${bg}`}
+                className={`mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${bg}`}
               >
                 <Icon className={`h-6 w-6 ${color}`} />
               </div>

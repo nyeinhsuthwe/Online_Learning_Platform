@@ -8,6 +8,7 @@ import { useApiQuery } from "@/hooks/useQuery";
 import { getSocketClient } from "@/lib/socket";
 import { useUserStore } from "@/store/user";
 import type { ChatMessage, ChatThread } from "@/types/type";
+import { useChatNotifications } from "@/store/chatNotifications";
 
 interface SocketAck<T> {
   ok: boolean;
@@ -37,6 +38,7 @@ function appendUniqueMessage(messages: ChatMessage[], message: ChatMessage) {
 
 const ChatPage = () => {
   const { user } = useUserStore();
+  const { setChatOpen, clear } = useChatNotifications();
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isSending, setIsSending] = useState(false);
@@ -60,6 +62,12 @@ const ChatPage = () => {
       setMessages(messageResponse.data);
     }
   }, [messageResponse]);
+
+  useEffect(() => {
+    setChatOpen(true);
+    clear();
+    return () => setChatOpen(false);
+  }, [setChatOpen, clear]);
 
   useEffect(() => {
     if (!threadId) {
@@ -131,9 +139,9 @@ const ChatPage = () => {
 
   return (
     <div className="w-full max-w-5xl">
-      <Card className="flex min-h-[70vh] flex-col p-0">
-        <div className="border-b px-6 py-4">
-          <h2 className="text-xl font-semibold">Support Chat</h2>
+      <Card className="glass-card flex min-h-[70vh] flex-col p-0">
+        <div className="border-b border-border/60 px-6 py-5">
+          <h2 className="text-xl font-semibold text-foreground">Support Chat</h2>
           <p className="text-sm text-muted-foreground">Chat with admin/teacher here.</p>
         </div>
 
@@ -150,8 +158,8 @@ const ChatPage = () => {
             return (
               <div key={message._id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
                 <div
-                  className={`max-w-[75%] rounded-xl px-3 py-2 text-sm ${
-                    isMine ? "bg-primary text-primary-foreground" : "border bg-muted/40"
+                  className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
+                    isMine ? "bg-gradient-to-r from-sky-600 to-emerald-500 text-white" : "border border-border/60 bg-background/70"
                   }`}
                 >
                   <p>{message.content}</p>
@@ -165,7 +173,7 @@ const ChatPage = () => {
           <div ref={bottomRef} />
         </div>
 
-        <div className="flex items-center gap-2 border-t px-6 py-4">
+        <div className="flex items-center gap-2 border-t border-border/60 px-6 py-4">
           <Input
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
@@ -173,7 +181,7 @@ const ChatPage = () => {
             placeholder="Type your message..."
             disabled={loading || !threadId}
           />
-          <Button onClick={handleSend} disabled={!draft.trim() || loading || isSending || !threadId}>
+          <Button onClick={handleSend} className="rounded-xl" disabled={!draft.trim() || loading || isSending || !threadId}>
             <Send className="size-4" />
           </Button>
         </div>

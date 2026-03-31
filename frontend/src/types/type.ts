@@ -27,7 +27,7 @@ export interface Review {
     id: string
     name: string
     avatar?: string
-  }
+  } | null
   courseId: string
   rating: number
   comment: string

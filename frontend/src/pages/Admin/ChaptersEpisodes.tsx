@@ -177,7 +177,7 @@ const ChaptersEpisodes = () => {
         </CardHeader>
         <CardContent>
           <select
-            className="h-10 w-full max-w-md rounded-md border px-3 text-sm"
+            className="h-10 w-full dark:bg-gray-700 max-w-md rounded-md border px-3 text-sm"
             value={courseId}
             onChange={(e) => setCourseId(e.target.value)}
           >

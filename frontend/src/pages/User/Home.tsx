@@ -14,7 +14,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="space-y-15">
+    <main className="space-y-14">
       <HeroSection />
       <FeaturedCourses />
       <WhyChooseUs />

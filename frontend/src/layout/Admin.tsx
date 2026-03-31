@@ -1,11 +1,15 @@
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import AdminSidebar from "@/features/sidebar/AdminSidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useApiMutation } from "@/hooks/useMutation";
 import { useUserStore } from "@/store/user";
-import { LayoutDashboard, BookOpen, FolderTree, Wallet, Users, LogOut, Tags, MessageSquare } from "lucide-react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { LayoutDashboard, BookOpen, FolderTree, Wallet, Users, Tags, MessageSquare, Bell, Search } from "lucide-react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { ModeToggle } from "@/features/DarkMode";
+import { useState } from "react";
 
 const menuItems = [
   { to: "/admin", icon: LayoutDashboard, label: "Dashboard", end: true },
@@ -19,7 +23,11 @@ const menuItems = [
 
 const LayoutForAdmin = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isMobile = useIsMobile();
   const { user, logout } = useUserStore();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const logoutMutation = useApiMutation({
     onSuccess: () => {
@@ -44,81 +52,67 @@ const LayoutForAdmin = () => {
     });
   };
 
+  const handleSidebarToggle = () => {
+    if (isMobile) {
+      setIsMobileOpen((prev) => !prev);
+    } else {
+      setIsCollapsed((prev) => !prev);
+    }
+  };
+
+  const closeMobileSidebar = () => setIsMobileOpen(false);
+
+  const isRouteActive = (to: string, end?: boolean) => {
+    if (end) return location.pathname === to;
+    return location.pathname.startsWith(to);
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto flex w-full max-w-[1440px] gap-4 p-4 md:p-6">
-        <aside className="sticky top-4 hidden h-[calc(100vh-2rem)] w-72 rounded-xl border bg-card p-4 shadow-sm md:block">
-          <div className="flex items-center justify-between border-b pb-4">
-            <div className="">
-              <p className="text-sm text-muted-foreground">Admin Panel</p>
-              <p className="font-semibold">{user?.name || "Admin"}</p>
-            </div>
-            <ModeToggle />
-          </div>
-          <nav className="mt-4 space-y-1">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
+    <div className="admin-gradient min-h-screen text-foreground font-admin">
+      {isMobileOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 z-30 bg-slate-900/40 backdrop-blur-sm lg:hidden"
+          onClick={closeMobileSidebar}
+          aria-label="Close sidebar"
+        />
+      )}
 
-              return (
-                <NavLink
-                  key={item.to}
-                  end={item.end}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition ${isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent"
-                    }`
-                  }
-                >
-                  <Icon size={16} />
-                  <span>{item.label}</span>
-                </NavLink>
-              );
-            })}
-          </nav>
+      <div className="flex min-h-screen">
+        <AdminSidebar
+          menuItems={menuItems}
+          userName={user?.name}
+          userEmail={user?.email}
+          isCollapsed={isCollapsed}
+          isMobileOpen={isMobileOpen}
+          isRouteActive={isRouteActive}
+          onToggle={handleSidebarToggle}
+          onCloseMobile={closeMobileSidebar}
+          onLogout={handleLogout}
+        />
 
-          <div className="mt-6 flex items-center gap-2">
-            <Button onClick={handleLogout} variant="outline" className="w-full justify-start">
-              <LogOut size={16} className="mr-2" />
-              Logout
-            </Button>
-          </div>
-        </aside>
-
-        <main className="w-full rounded-xl border bg-card p-4 shadow-sm md:p-6">
-          <div className="mb-4 border-b pb-4 md:hidden">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Admin</p>
-                <p className="font-semibold">{user?.name || "Admin"}</p>
+        <main className="flex min-w-0 flex-1 flex-col">
+          <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6 p-4 md:p-6 lg:pl-6">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-1 flex-wrap items-center gap-2 md:justify-end">
+                  <div className="relative w-full max-w-xs">
+                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      placeholder="Search admin data..."
+                      className="h-9 rounded-xl bg-background/70 pl-9"
+                    />
+                  </div>
+                  <Button variant="outline" size="icon" className="h-9 w-9 rounded-xl">
+                    <Bell size={16} />
+                  </Button>
+                  <ModeToggle />
+                </div>
               </div>
-              <ModeToggle />
-            </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {menuItems.map((item) => {
-                const Icon = item.icon;
 
-                return (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    end={item.end}
-                    className={({ isActive }) =>
-                      `inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs ${isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground"
-                      }`
-                    }
-                  >
-                    <Icon size={14} />
-                    {item.label}
-                  </NavLink>
-                );
-              })}
-            </div>
-            <Button onClick={handleLogout} variant="outline" className="mt-3 h-8 px-3 text-xs">
-              Logout
-            </Button>
+            <section className="glass-card min-h-[60vh] p-4 md:p-6 animate-fade-up">
+              <Outlet />
+            </section>
           </div>
-
-          <Outlet />
         </main>
       </div>
     </div>

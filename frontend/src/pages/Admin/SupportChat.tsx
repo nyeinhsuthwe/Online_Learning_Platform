@@ -168,7 +168,7 @@ const SupportChat = () => {
       </div>
 
       <div className="grid min-h-[70vh] grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="rounded-lg border bg-card p-3 lg:col-span-1">
+        <div className="glass-card p-3 lg:col-span-1">
           <p className="mb-3 text-sm font-medium">Students</p>
           <div className="space-y-2">
             {isThreadLoading && <p className="text-sm text-muted-foreground">Loading threads...</p>}
@@ -184,7 +184,7 @@ const SupportChat = () => {
                   key={thread._id}
                   type="button"
                   onClick={() => setSelectedThreadId(thread._id)}
-                  className={`w-full rounded-md border px-3 py-2 text-left transition ${
+                  className={`w-full rounded-xl border border-border/60 px-3 py-2 text-left transition ${
                     isActive ? "border-primary bg-primary/10" : "hover:bg-muted/40"
                   }`}
                 >
@@ -196,8 +196,8 @@ const SupportChat = () => {
           </div>
         </div>
 
-        <div className="flex flex-col rounded-lg border bg-card lg:col-span-2">
-          <div className="border-b px-4 py-3">
+        <div className="glass-card flex flex-col lg:col-span-2">
+          <div className="border-b border-border/60 px-4 py-3">
             <p className="font-medium">{activeThread?.student_id?.name || "Select a student"}</p>
           </div>
 
@@ -212,8 +212,8 @@ const SupportChat = () => {
                 return (
                   <div key={message._id} className={`flex ${isAdminMessage ? "justify-end" : "justify-start"}`}>
                     <div
-                      className={`max-w-[80%] rounded-xl px-3 py-2 text-sm ${
-                        isAdminMessage ? "bg-primary text-primary-foreground" : "border bg-muted/40"
+                      className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
+                        isAdminMessage ? "bg-gradient-to-r from-sky-600 to-emerald-500 text-white" : "border border-border/60 bg-background/70"
                       }`}
                     >
                       <p>{message.content}</p>
@@ -227,7 +227,7 @@ const SupportChat = () => {
             <div ref={bottomRef} />
           </div>
 
-          <div className="flex items-center gap-2 border-t p-3">
+          <div className="flex items-center gap-2 border-t border-border/60 p-3">
             <Input
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
@@ -235,7 +235,7 @@ const SupportChat = () => {
               placeholder={selectedThreadId ? "Type your reply..." : "Select a thread first"}
               disabled={!selectedThreadId || isMessagesLoading}
             />
-            <Button onClick={handleSend} disabled={!selectedThreadId || !draft.trim() || isSending}>
+            <Button className="rounded-xl" onClick={handleSend} disabled={!selectedThreadId || !draft.trim() || isSending}>
               <Send className="size-4" />
             </Button>
           </div>

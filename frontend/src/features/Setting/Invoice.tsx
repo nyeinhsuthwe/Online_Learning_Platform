@@ -29,7 +29,7 @@ export function Invoice() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 ">
         <h1 className="text-2xl font-semibold">My Invoices</h1>
         <InvoiceSkeleton rows={limit} />
       </div>
@@ -37,10 +37,13 @@ export function Invoice() {
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">My Invoices</h1>
+    <div className="space-y-6  w-250 mx-auto">
+      <div>
+        <h1 className="text-2xl font-semibold text-foreground">My Invoices</h1>
+        <p className="text-sm text-muted-foreground">Track your recent payments and receipts.</p>
+      </div>
 
-      <div className="rounded-xl border bg-background">
+      <div className="rounded-2xl  border border-border/60 bg-background/70 shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>

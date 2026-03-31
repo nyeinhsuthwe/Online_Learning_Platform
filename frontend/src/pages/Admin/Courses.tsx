@@ -190,11 +190,12 @@ const Courses = () => {
         <p className="text-sm text-muted-foreground">Create and manage courses.</p>
       </div>
 
-      <Card>
+      <Card className="glass-card">
         <CardHeader>
-          <CardTitle>Create Course</CardTitle>
+          <CardTitle>Courses</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <Input
             placeholder="Course title"
             value={form.title}
@@ -202,7 +203,7 @@ const Courses = () => {
           />
 
           <select
-            className="h-10 rounded-md border px-3 text-sm"
+            className="h-10 rounded-xl border border-border/60 bg-background/70 px-3 text-sm"
             value={form.category_id}
             onChange={(e) => setForm((prev) => ({ ...prev, category_id: e.target.value }))}
           >
@@ -260,20 +261,15 @@ const Courses = () => {
               {createMutation.isPending ? "Creating..." : "Create Course"}
             </Button>
           </div>
-        </CardContent>
-      </Card>
+          </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Course List</CardTitle>
-        </CardHeader>
-        <CardContent>
+          <div className="border-t border-border/60 pt-4">
           {isLoading ? (
             <p className="text-sm text-muted-foreground">Loading...</p>
           ) : (
             <div className="space-y-2">
               {paginatedCourses.map((course) => (
-                <div key={course._id} className="rounded-md border p-3">
+                <div key={course._id} className="rounded-xl border border-border/60 bg-background/70 p-4">
                   {editingId === course._id ? (
                     <div className="space-y-3">
                       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -284,7 +280,7 @@ const Courses = () => {
                         />
 
                         <select
-                          className="h-10 rounded-md border px-3 text-sm"
+                          className="h-10 rounded-xl border border-border/60 bg-background/70 px-3 text-sm"
                           value={editForm.category_id}
                           onChange={(e) => setEditForm((prev) => ({ ...prev, category_id: e.target.value }))}
                         >
@@ -357,7 +353,7 @@ const Courses = () => {
                   ) : (
                     <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
                       <div className="space-y-1">
-                        <p className="font-semibold">{course.title}</p>
+                        <p className="font-semibold text-foreground">{course.title}</p>
                         <p className="text-sm text-muted-foreground">
                           Category: {categoryMap.get(course.category_id) || course.category_id}
                         </p>
@@ -423,6 +419,7 @@ const Courses = () => {
               </div>
             </div>
           )}
+          </div>
         </CardContent>
       </Card>
     </div>

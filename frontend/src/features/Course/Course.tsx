@@ -48,54 +48,59 @@ const CourseCard = (props: React.ComponentProps<typeof Card>) => {
     )
 
     return (
-        <>
-            <div className="grid space-y-5 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3  [@media(min-width:1024px)_and_(max-width:1140px)]:grid-cols-2 [@media(min-width:1024px)_and_(max-width:1145px)]:gap-10 items-start justify-items-center">
+        <div className="space-y-8">
+            <div className="flex flex-col gap-2">
+                <h2 className="section-title">All Courses</h2>
+                <p className="section-subtitle">Pick a track and start building skills today.</p>
+            </div>
+
+            <div className="grid grid-cols-1 items-start justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3 [@media(min-width:1024px)_and_(max-width:1140px)]:grid-cols-2">
                 {
                     paginatedCourses?.map((course: typeCard) => {
                         const progressPercentage = course.progress ?? 0;
                         console.log(progressPercentage)
                         return (
-                            <Card key={course._id} {...props} className="h-150 w-90 px-4 py-4 gap-4  hover:shadow-[0_4px_12px_rgba(0,0,0,0.03),0_-4px_12px_rgba(0,0,0,0.03)] shadow-sky-200" onClick={() => { clickCard(course._id) }}>
-                                <div className="flex justify-center items-center">
+                            <Card key={course._id} {...props} className="glass-card hover-lift w-full max-w-sm cursor-pointer gap-4 border-0 p-4" onClick={() => { clickCard(course._id) }}>
+                                <div className="relative flex justify-center items-center overflow-hidden rounded-2xl">
                                     <img
                                         src={`${import.meta.env.VITE_API_URL.replace("/api", "")}${course.thumbnailUrl}`}
-                                        className="h-70 w-100 rounded-lg mx-auto object-cover"
+                                        className="h-44 w-full object-cover transition duration-500 hover:scale-105"
                                     />
                                 </div>
-                                <div className='flex gap-1'>
-                                    {course.topics.map((topic, index) => (
+                                <div className='flex flex-wrap gap-1'>
+                                    {course.topics.slice(0, 4).map((topic, index) => (
                                         <Badge
                                             key={topic}
-                                            className={topicColors[index % topicColors.length]}
+                                            className={`${topicColors[index % topicColors.length]} rounded-full px-2 py-0.5 text-[11px] font-semibold`}
                                         >
                                             {topic}
                                         </Badge>
                                     ))}
                                 </div>
-                                <p className='text-lg font-semibold text-foreground'>{course.title}</p>
+                                <p className='text-lg font-semibold text-foreground line-clamp-2'>{course.title}</p>
 
-                                <div className='flex gap-3'>
+                                <div className='flex gap-3 text-sm text-muted-foreground'>
                                     <p>{course.chapterCount} Chapters</p>
                                     <p>{course.episodeCount} Episodes</p>
                                 </div>
 
-                                <div className='flex gap-1 font-semibold'>
-                                    <CircleStar className=' text-green-600 ' size={16} />
-                                    <p className='text-sm  text-red-600 '> 12 students certificated.</p>
+                                <div className='flex items-center gap-2 text-sm font-semibold text-foreground'>
+                                    <CircleStar className='text-emerald-500' size={16} />
+                                    <p>12 students certified.</p>
                                 </div>
 
                                 {/* Updated progress section */}
                                 <div>
 
                                     <Progress value={progressPercentage} />
-                                    <p className='mt-3'>{progressPercentage}% Completed</p>
+                                    <p className='mt-3 text-sm text-muted-foreground'>{progressPercentage}% Completed</p>
                                 </div>
 
-                                <div className='flex'>
-                                    <p className='text-sm  text-center rounded-lg text-purple-500 py-2  font-semibold'>
-                                        <span className="font-bold "> {course.enrollCount} students</span> enrolled.
+                                <div className='flex items-center justify-between gap-3'>
+                                    <p className='text-sm font-semibold text-primary'>
+                                        <span className="font-bold "> {course.enrollCount} learners</span> enrolled.
                                     </p>
-                                    <Separator orientation="vertical" className='mx-3  bg-gray-500' />
+                                    <Separator orientation="vertical" className='mx-2 h-6 bg-border/80' />
                                     <EnrollBtn course={course} />
                                 </div>
                             </Card>
@@ -134,7 +139,7 @@ const CourseCard = (props: React.ComponentProps<typeof Card>) => {
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>
-        </>
+        </div>
     )
 }
 

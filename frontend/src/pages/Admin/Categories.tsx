@@ -86,94 +86,91 @@ const Categories = () => {
         <p className="text-sm text-muted-foreground">Create and manage categories.</p>
       </div>
 
-      <Card>
+      <Card className="glass-card">
         <CardHeader>
-          <CardTitle>Create Category</CardTitle>
+          <CardTitle>Categories</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-3 sm:flex-row">
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Category name"
-            className="sm:max-w-md"
-          />
-          <Button onClick={onCreate} disabled={createMutation.isPending}>
-            {createMutation.isPending ? "Creating..." : "Create"}
-          </Button>
-        </CardContent>
-      </Card>
+        <CardContent className="space-y-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Category name"
+              className="sm:max-w-md"
+            />
+            <Button onClick={onCreate} disabled={createMutation.isPending}>
+              {createMutation.isPending ? "Creating..." : "Create"}
+            </Button>
+          </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Category List</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading...</p>
-          ) : (
-            <div className="space-y-2">
-              {(data?.data ?? []).map((category) => (
-                <div key={category._id} className="flex flex-col gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between">
-                  {editingId === category._id ? (
-                    <Input
-                      value={editingName}
-                      onChange={(e) => setEditingName(e.target.value)}
-                      className="sm:max-w-sm"
-                    />
-                  ) : (
-                    <p className="font-medium">{category.name}</p>
-                  )}
-
-                  <div className="flex gap-2">
+          <div className="border-t border-border/60 pt-4">
+            {isLoading ? (
+              <p className="text-sm text-muted-foreground">Loading...</p>
+            ) : (
+              <div className="space-y-2">
+                {(data?.data ?? []).map((category) => (
+                  <div key={category._id} className="flex flex-col gap-2 rounded-xl border border-border/60 bg-background/70 p-3 sm:flex-row sm:items-center sm:justify-between">
                     {editingId === category._id ? (
-                      <>
-                        <Button size="sm" onClick={() => onUpdate(category._id)} disabled={updateMutation.isPending}>
-                          Save
-                        </Button>
-                        <Button size="sm" variant="outline" onClick={() => setEditingId(null)}>
-                          Cancel
-                        </Button>
-                      </>
+                      <Input
+                        value={editingName}
+                        onChange={(e) => setEditingName(e.target.value)}
+                        className="sm:max-w-sm"
+                      />
                     ) : (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            setEditingId(category._id);
-                            setEditingName(category.name);
-                          }}
-                        >
-                          Edit
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button size="sm" variant="destructive">
-                              Delete
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Delete category?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90" onClick={() => onDelete(category._id)}>
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </>
+                      <p className="font-medium text-foreground">{category.name}</p>
                     )}
+
+                    <div className="flex gap-2">
+                      {editingId === category._id ? (
+                        <>
+                          <Button size="sm" onClick={() => onUpdate(category._id)} disabled={updateMutation.isPending}>
+                            Save
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => setEditingId(null)}>
+                            Cancel
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setEditingId(category._id);
+                              setEditingName(category.name);
+                            }}
+                          >
+                            Edit
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button size="sm" variant="destructive">
+                                Delete
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete category?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90" onClick={() => onDelete(category._id)}>
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>

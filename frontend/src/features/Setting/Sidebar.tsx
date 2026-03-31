@@ -1,4 +1,3 @@
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Lock, ReceiptText, UserRoundPen } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -10,34 +9,18 @@ export function SettingSidebar({ setPanelOpen }: { setPanelOpen: (panel: string)
     ];
 
     return (
-        <Sidebar className=" relative  py-10 bg-card ">
-            <SidebarContent className="h-full ">
-                <SidebarGroup className="px-5  bg-card h-full">
-                    <SidebarGroupContent className="bg-card">
-                        <SidebarMenu>
-                            {items.map((item) => (
-                                <SidebarMenuItem key={item.title} className=" ">
-                                    <SidebarMenuButton asChild>
-                                        <NavLink
-                                            to={item.path}
-                                            onClick={() => setPanelOpen(item.panel)}
-                                            className="grid grid-cols-[24px_auto] items-center gap-3 h-14 rounded-md  transition-colors hover:bg-muted aria-[current=page]:bg-muted aria-[current=page]:text-foreground ">
-                                            <div className="flex items-center justify-center">
-                                                <item.icon className="size-5" />
-                                            </div>
-
-                                            <span className="text-[16px] font-semibold text-left">
-                                                {item.title}
-                                            </span>
-                                        </NavLink>
-
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
-            </SidebarContent>
-        </Sidebar>
+        <nav className="flex flex-wrap items-center gap-2">
+            {items.map((item) => (
+                <NavLink
+                    key={item.title}
+                    to={item.path}
+                    onClick={() => setPanelOpen(item.panel)}
+                    className="flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-4 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground aria-[current=page]:border-primary aria-[current=page]:bg-primary/10 aria-[current=page]:text-primary"
+                >
+                    <item.icon className="size-4" />
+                    {item.title}
+                </NavLink>
+            ))}
+        </nav>
     );
 }

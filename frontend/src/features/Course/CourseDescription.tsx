@@ -2,6 +2,7 @@ import { useCourse } from "@/common/api";
 import { Button } from "@/components/ui/button";
 import type { Card } from "@/types/type";
 import { useState } from "react";
+import { BookOpen, Clock3, GraduationCap, Sparkles } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom"
 import { EnrollBtn } from "./EnrollBtn";
 import { CourseDescriptionSkeleton } from "../skeletons/CourseDescriptionSkeleton";
@@ -21,36 +22,63 @@ export function CourseDescription() {
     }
 
     return (
-        <div className="space-y-5 ">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-text-yellow">
-                {course.title}
-            </h1>
-            <p className="text-justify text-text-skyblue dark:text-sky-400 text-sm sm:text-base md:text-lg">
-                <span className={expanded ? "" : "line-clamp-3"}>
-                    {course?.description || "There is no description!"}
+        <section className="space-y-7">
+            <div className="flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    New Learning Path
                 </span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground">
+                    <GraduationCap className="h-3.5 w-3.5 text-emerald-500" />
+                    Project-ready skills
+                </span>
+            </div>
 
-                {canToggle && (
-                    <button
-                        onClick={() => setExpanded(!expanded)}
-                        className={`inline text-text-skyblue font-medium hover:underline ml-1`}
-                    >
-                        {expanded ? "see less" : "see more..."}
-                    </button>
-                )}
-            </p>
+            <div className="space-y-4">
+                <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                    {course.title}
+                </h1>
+                <p className="max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base md:text-lg">
+                    <span className={expanded ? "" : "line-clamp-3"}>
+                        {course?.description || "There is no description!"}
+                    </span>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {canToggle && (
+                        <button
+                            onClick={() => setExpanded(!expanded)}
+                            className="ml-1 inline font-medium text-primary hover:underline"
+                        >
+                            {expanded ? "See less" : "See more"}
+                        </button>
+                    )}
+                </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 rounded-2xl border border-border/60 bg-background/70 p-4 text-sm text-muted-foreground sm:grid-cols-3">
+                <div className="inline-flex items-center gap-2">
+                    <Clock3 className="h-4 w-4 text-primary" />
+                    Self-paced schedule
+                </div>
+                <div className="inline-flex items-center gap-2">
+                    <BookOpen className="h-4 w-4 text-primary" />
+                    Step-by-step modules
+                </div>
+                <div className="inline-flex items-center gap-2">
+                    <GraduationCap className="h-4 w-4 text-primary" />
+                    Practical outcomes
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <EnrollBtn course={course} />
                 <Button
                     onClick={() => navigate(-1)}
-                    className="border z-0 dark:bg-black dark:text-white bg-bg-navbar dark:hover:bg-transparent hover:bg-bg-navbar text-text-secondary border-text-yellow w-full h-12 text-[14px] sm:text-[16px] rounded-lg"
+                    variant="outline"
+                    className="h-12 w-full rounded-2xl border-border/70 bg-background/75 text-[14px] text-foreground shadow-sm hover:bg-accent sm:text-[16px]"
                 >
                     Watch Later
                 </Button>
             </div>
-
-
-        </div>
+        </section>
     )
 }

@@ -41,32 +41,32 @@ export function CommentNode({ comment, episodeId }: CommentNodeProps) {
   };
 
   return (
-    <div className="mt-4 bg-white p-5 rounded-2xl dark:bg-[#1c2230]  ">
+    <div className="mt-4 rounded-2xl border border-border/60 bg-background/70 p-5 shadow-sm">
       <div className="flex gap-3">
         <img
           src={comment.user_id?.avatar || "/ava1.jpg"}
           alt={comment.user_id?.name}
-          className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-600"
+          className="w-10 h-10 rounded-full border border-border/60"
         />
 
 
         <div className="flex-1 space-y-1 ">
           {/* User Name & Time */}
           <div className="flex items-center justify-between">
-            <p className="font-semibold text-text-primary dark:text-white">
+            <p className="font-semibold text-foreground">
               {comment.user_id?.name || "Anonymous"}
             </p>
-            <span className="text-xs text-gray-400 dark:text-gray-500">
+            <span className="text-xs text-muted-foreground">
               {new Date(comment.createdAt).toLocaleDateString()}
             </span>
           </div>
 
-          <p className="text-gray-800 text-justify dark:text-gray-200 text-sm">{comment.content}</p>
+          <p className="text-justify text-sm text-foreground">{comment.content}</p>
 
           <div className="flex items-center gap-4 mt-1">
             <button
               onClick={() => setShowReply(!showReply)}
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-primary hover:underline"
             >
               {showReply ? "Cancel" : "Reply"}
             </button>

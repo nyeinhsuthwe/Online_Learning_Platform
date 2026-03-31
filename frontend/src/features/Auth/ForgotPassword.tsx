@@ -48,9 +48,10 @@ const ForgotPassword = () => {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="glass-card w-full max-w-md mx-auto border-0 shadow-lg">
       <CardHeader>
         <CardTitle>Forgot Password</CardTitle>
+        <p className="text-sm text-muted-foreground">We will email you a secure reset link.</p>
       </CardHeader>
 
       <CardContent>
@@ -74,6 +75,7 @@ const ForgotPassword = () => {
                 id="email"
                 type="email"
                 placeholder="m@example.com"
+                className="h-12 rounded-xl bg-background/70"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -88,7 +90,7 @@ const ForgotPassword = () => {
                 <Button
                   type="submit"
                   disabled={forgotPasswordMutation.isPending}
-                  className="bg-primary-dark text-white hover:bg-primary-hover w-full"
+                  className="h-11 w-full rounded-xl bg-gradient-to-r from-sky-600 to-emerald-500 text-white shadow-sm hover:shadow-md"
                 >
                   {forgotPasswordMutation.isPending ? "Sending..." : "Send reset link"}
                 </Button>
@@ -97,7 +99,7 @@ const ForgotPassword = () => {
                   Remember your password?{" "}
                   <NavLink
                     to="/login"
-                    className="text-blue-500 hover:text-blue-600"
+                    className="text-primary hover:text-primary/80"
                   >
                     Login
                   </NavLink>

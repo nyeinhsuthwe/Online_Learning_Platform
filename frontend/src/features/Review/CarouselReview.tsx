@@ -15,16 +15,19 @@ export const CourseReviews = ({ courseId }: CourseReviewsProps) => {
     if (error) return <p className="text-red-500">Failed to load reviews</p>
 
     return (
-        <div className="mt-10 ">
+        <div className="space-y-5 p-5 md:p-6">
             {totalReviews === 0 ? (
-                <p className="text-muted-foreground"></p>
+                <p className="text-sm text-muted-foreground">No reviews yet.</p>
             ) : (
-                <div>
-                    <h2 className="text-xl font-semibold mb-2">Student Reviews</h2>
+                <div className="space-y-4">
+                    <div className="space-y-2 border-b border-border/60 pb-4">
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">Community Feedback</p>
+                        <h2 className="text-2xl font-semibold tracking-tight text-foreground">Student Reviews</h2>
+                        <p className="text-sm text-muted-foreground">Real comments from learners who took this course.</p>
+                    </div>
 
                     <ReviewSummary totalReviews={totalReviews} />
                     <ReviewCarousel reviews={reviews} />
-
                 </div>
             )}
         </div>

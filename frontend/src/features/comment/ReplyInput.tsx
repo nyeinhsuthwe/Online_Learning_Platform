@@ -51,12 +51,12 @@ export function ReplyInput({ onCancel, parentCommentId }: ReplyInputProps) {
   };
 
   return (
-    <Card className="mt-4 bg-sky-50 dark:bg-transparent p-4">
+    <Card className="glass-card mt-4 p-4">
       <div className="flex gap-3">
         <img
           src={user?.user?.avatar || "/ava1.jpg"}
           alt="User profile"
-          className="w-10 h-10 rounded-full"
+          className="w-10 h-10 rounded-full border border-border/60"
         />
 
         <div className="flex-1 flex flex-col gap-2">
@@ -64,15 +64,15 @@ export function ReplyInput({ onCancel, parentCommentId }: ReplyInputProps) {
             placeholder="Write a reply..."
             value={reply}
             onChange={(e) => setReply(e.target.value)}
-            className="w-full h-24 bg-white text-text-primary dark:text-white resize-none"
+            className="w-full h-24 rounded-xl bg-background/70 text-foreground resize-none"
           />
 
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" className="text-gray-600" onClick={onCancel}>
+            <Button variant="ghost" className="text-muted-foreground hover:text-foreground" onClick={onCancel}>
               Cancel
             </Button>
             <Button
-              className="bg-primary-dark text-white hover:bg-primary-hover"
+              className="bg-gradient-to-r from-sky-600 to-emerald-500 text-white shadow-sm hover:shadow-md"
               onClick={handleSubmit}
             >
               Reply

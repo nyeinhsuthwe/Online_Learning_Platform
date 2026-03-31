@@ -18,9 +18,9 @@ export function PaymentDetail() {
     }
 
     return (
-        <Card className="w-170 h-auto mx-auto p-6 rounded-2xl shadow-md">
+        <Card className="glass-card w-full max-w-lg mx-auto p-6">
             {/* Thumbnail */}
-            <div className="w-full h-56 overflow-hidden rounded-xl mb-6">
+            <div className="w-full h-56 overflow-hidden rounded-2xl mb-6">
                 <img
                     className="w-full h-full object-cover"
                     src={`${import.meta.env.VITE_API_URL.replace(
@@ -33,11 +33,11 @@ export function PaymentDetail() {
 
             {/* Course Info */}
             <div className="space-y-3">
-                <h2 className="text-2xl font-semibold text-gray-700 dark:text-blue-400">
+                <h2 className="text-2xl font-semibold text-foreground">
                     {courseData?.title}
                 </h2>
 
-                <p className="text-sm text-gray-500 dark:text-yellow-600 line-clamp-3">
+                <p className="text-sm text-muted-foreground line-clamp-3">
                     {courseData?.description || "There is no description"}
                 </p>
             </div>
@@ -47,24 +47,24 @@ export function PaymentDetail() {
 
             {/* Price Summary */}
             <div className="flex items-center justify-between">
-                <span className="text-xl font-semibold text-gray-600 dark:text-gray-200">Course Price</span>
-                <span className="text-2xl font-bold text-red-500">
+                <span className="text-xl font-semibold text-foreground">Course Price</span>
+                <span className="text-2xl font-bold text-emerald-500">
                     {courseData?.price} MMK
                 </span>
             </div>
 
             <div className="flex flex-col gap-3 mt-3">
-                <span className="text-xl text-green-500 font-semibold">
+                <span className="text-xl text-emerald-500 font-semibold">
                    LifeTime Provided Services
                 </span>
-                <span className=" font-semibold flex gap-2  items-center ">
-                   <FaStar className="text-yellow-500"/> LifeTime Update Access
+                <span className="font-semibold flex gap-2 items-center text-foreground">
+                   <FaStar className="text-amber-500"/> LifeTime Update Access
                 </span>
-                <span className=" font-semibold flex gap-2  items-center">
-                   <FaStar className="text-yellow-500"/> One By One Meeting
+                <span className="font-semibold flex gap-2 items-center text-foreground">
+                   <FaStar className="text-amber-500"/> One By One Meeting
                 </span>
-                <span className=" font-semibold flex gap-2  items-center">
-                   <FaStar className="text-yellow-500"/> Unlimited Download
+                <span className="font-semibold flex gap-2 items-center text-foreground">
+                   <FaStar className="text-amber-500"/> Unlimited Download
                 </span>
             </div>
         </Card>

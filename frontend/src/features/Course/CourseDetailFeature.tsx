@@ -19,9 +19,7 @@ export function CourseDetailFeature() {
                     <div className="space-y-6 xl:col-span-8">
                         
 
-                        <section className="rounded-3xl  bg-card/75 p-5 shadow-sm backdrop-blur md:p-6">
                             <CourseDescription />
-                        </section>
                     </div>
 
                     <div className="xl:col-span-4 xl:flex ">
